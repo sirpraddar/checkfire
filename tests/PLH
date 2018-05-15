@@ -1,0 +1,35 @@
+{
+   "files": {
+      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK"
+   },
+   "todo": [
+      "pingLH"
+   ],
+   "name": "PLH",
+   "tests": {
+      "pingLH2": {
+         "script": "ping.sh",
+         "require": [],
+         "description": "this test pings the loopback interface.",
+         "negate": false,
+         "name": "pingLH2",
+         "tparams": {
+            "DESTIP": "127.0.0.2",
+            "COUNT": "2"
+         },
+         "configs": []
+      },
+      "pingLH": {
+         "script": "ping.sh",
+         "require": [],
+         "description": "this test pings the loopback interface.",
+         "negate": false,
+         "name": "pingLH",
+         "tparams": {
+            "DESTIP": "127.0.0.2"
+         },
+         "configs": []
+      }
+   },
+   "configs": {}
+}

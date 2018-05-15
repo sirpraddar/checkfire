@@ -1,0 +1,61 @@
+{
+   "name": "PROVA",
+   "tests": {
+      "pingLH": {
+         "name": "pingLH",
+         "description": "this test pings the loopback interface.",
+         "script": "ping.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {
+            "DESTIP": "127.0.0.2",
+            "COUNT": "2"
+         },
+         "negate": false
+      },
+      "PEnv": {
+         "name": "PEnv",
+         "description": "Prints environment of the script to test env setting.",
+         "script": "printEnv.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": "1234",
+            "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB": "ccc"
+         },
+         "negate": false
+      },
+      "FailPy": {
+         "name": "FailPy",
+         "description": "This test always fails.",
+         "script": "fail.py",
+         "configs": [],
+         "require": [],
+         "tparams": {},
+         "negate": false
+      },
+      "GoodPy": {
+         "name": "",
+         "description": "This test always succedes.",
+         "script": "good.py",
+         "configs": [],
+         "require": [],
+         "tparams": {},
+         "negate": false
+      }
+   },
+   "configs": {},
+   "todo": [
+      "PEnv",
+      "FailPy",
+      "pingLH",
+      "GoodPy"
+   ],
+   "files": {
+      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",
+      "fail.py": "IyEvdXNyL2Jpbi9weXRob24zCnByaW50ICgidGVzdCBmYWxsaW1lbnRvIikKZXhpdCgxKQ==",
+      "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
+      "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk=",
+      "GoodPy": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk="
+   }
+}
