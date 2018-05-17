@@ -1,6 +1,7 @@
 from .CFSCommands import command
 from .CFSUtils import checkPathExists
-from CheckFireCore import Test,TestPackage
+from CheckFireCore.Test import Test
+from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
 
 #Executes the test suite
