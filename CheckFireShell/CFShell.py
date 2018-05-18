@@ -29,6 +29,8 @@ class CFShell:
             'testlist' : testlist,
             'importfile': importfile,
             'go': go,
+            'deletefile': deletefile,
+            'deletetest': deletetest,
         }
         self.environ = {}
         self.context = {

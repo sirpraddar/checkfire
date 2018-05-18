@@ -132,6 +132,63 @@ class newtest (command):
             return 2
 
 
+class deletetest(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) != 2:
+            self.println("Usage: deletetest <TestName>")
+            return 2
+
+        name = args[1]
+
+        if name not in context["package"].tests:
+            self.println("Test not found in package.")
+            return 1
+
+        context["package"].tests.pop(name)
+        self.println("Test deleted.")
+        return 0
+
+
+class deletefile(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) != 2:
+            self.println("Usage: deletefile <FileName>")
+            return 2
+
+        name = args[1]
+
+        if name not in context["package"].files:
+            self.println("File not found in package.")
+            return 1
+
+        for k,i in context["package"].tests.items():
+            if i.script == name:
+                self.println("Can't delete, file {} is the {} test script.".format(name,k))
+                return 1
+            for j in i.require:
+                if j == name:
+                    self.println("Can't delete, file {} is required by {}".format(name,k))
+
+        for k, i in context["package"].configs.items():
+            if i.escript == name or i.dscript == name:
+                self.println("Can't delete, file {} is the {} config script.".format(name, k))
+                return 1
+            for j in i.require:
+                if j == name:
+                    self.println("Can't delete, file {} is required by {}".format(name, k))
+                    return 1
+
+        context["package"].files.pop(name)
+        self.println("File deleted.")
+        return 0
+
+
 class clonetest(command):
     def getContextSpace(self):
         return self.CONTEXT_PACKAGE
