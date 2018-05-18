@@ -1,0 +1,2 @@
+from .CFSCommands import command
+
