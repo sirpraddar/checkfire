@@ -148,6 +148,13 @@ class TestPackage:
         textb64 = base64.b64encode(open(scriptPath, "rb").read())
         self.files[name] = textb64.decode("ascii")
 
+    def renameTest(self,oldname,newname):
+        if oldname in self.tests:
+            backup = self.tests[oldname]
+            self.tests.pop(oldname)
+            backup.name = newname
+            self.tests[newname] = backup
+
     def appendNewConfig(self,name, escript, dscript, description):
         pass
 

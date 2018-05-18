@@ -1,5 +1,40 @@
 from .CFSCommands import command
 
+
+class tedit (command):
+    def getContextSpace(self):
+        return self.CONTEXT_TEST
+
+    def execute(self, args, environ, context):
+        if len(args) != 3:
+            self.println("Usage: tedit name|desc <Value>")
+            self.println("       tedit negate true|false|0|1")
+            return 2
+
+        command = args[1]
+        value = args[2]
+
+        if command == "name":
+            context["package"].renameTest(context["test"].name,value)
+            return 0
+        elif command == "desc":
+            context["test"].description = value
+            return 0
+        elif command == "negate":
+            if value == "true" or value == 1:
+                context["test"].negate = True
+                return 0
+            elif value == "false" or value == 0:
+                context["test"].negate = False
+                return 0
+            else:
+                self.println("Please use true|1 or false|0")
+                return 1
+        else:
+            self.println("Option not recognized. Please use name,description,script,negate")
+            return 1
+
+
 class tparam (command):
     def getContextSpace(self):
         return self.CONTEXT_TEST
@@ -101,6 +136,3 @@ class tconfig(command):
         else:
             self.println("Please use add or delete")
             return 2
-
-
-

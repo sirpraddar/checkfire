@@ -31,6 +31,7 @@ class CFShell:
             'go': go,
             'deletefile': deletefile,
             'deletetest': deletetest,
+            'tedit':tedit,
         }
         self.environ = {}
         self.context = {
@@ -56,12 +57,25 @@ class CFShell:
                 continue
             except EOFError:
                 break
-            #Some handling of white-spaces
-            text = re.sub(r'[ ]+'," ", text)
-            text = text.strip()
-            arguments = text.split(" ")
-            if text == "":
+
+            if text.count("'") % 2 == 1:
+                print("Missing quotes.")
                 continue
+            doubleQuoted = text.split("'")
+            cc = 0
+            arguments = []
+
+            for i in doubleQuoted:
+                if cc % 2 == 1:
+                    arguments.append(i)
+                else:
+                    ii = re.sub(r'[ ]+'," ", i)
+                    ii = ii.strip()
+                    arguments.extend(ii.split(" "))
+                cc += 1
+            while '' in arguments:
+                arguments.remove('')
+
             if arguments[0] not in self.switch:
                 print ("ERROR: Command not recognized or not supported yet.")
                 continue
