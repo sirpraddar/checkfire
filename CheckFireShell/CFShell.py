@@ -32,6 +32,7 @@ class CFShell:
             'deletefile': deletefile,
             'deletetest': deletetest,
             'tedit':tedit,
+            'newconfig':newconfig,
         }
         self.environ = {}
         self.context = {

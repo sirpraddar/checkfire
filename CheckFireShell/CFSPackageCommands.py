@@ -57,10 +57,8 @@ class newconfig(command):
             if importDScript:
                 importfile().execute(["importfile", disableScript], environ, context)
 
-
-            context["package"].appendNewConfig(name,enableScript,disableScript)
-
-            self.println("Script created.")
+            context["package"].appendNewConfig(name,enableScript,disableScript,description)
+            self.println("Config created.")
             return 0
 
         elif command == "package":

@@ -141,7 +141,7 @@ class TestPackage:
             raise ValueError
 
     def appendNewTest(self, name, scriptPath, description):
-        self.tests[name] = Test()
+        self.tests[name] = Test(name=name)
         scriptName = Path(scriptPath).name
         self.tests[name].script = scriptName
         self.tests[name].description = description
@@ -156,7 +156,20 @@ class TestPackage:
             self.tests[newname] = backup
 
     def appendNewConfig(self,name, escript, dscript, description):
-        pass
+        conf = Config(name)
+        if escript not in self.files:
+            self.importFile(escript)
+        if dscript not in self.files:
+            self.importFile(dscript)
+
+        escript = Path(escript).name
+        dscript = Path(dscript).name
+
+        conf.dscript = dscript
+        conf.escript = escript
+        conf.description = description
+
+        self.configs[name] = conf
 
     def copyTestFromPackage (self, sourcePack, name):
         test = sourcePack.tests[name]
