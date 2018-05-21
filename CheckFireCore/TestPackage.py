@@ -110,7 +110,7 @@ class TestPackage:
             self.tests[k] = Test(v,k)
         #self.tests = testParsed["tests"]
         for k,c in testParsed["configs"].items():
-            self.configs[k] = Config(k,v)
+            self.configs[k] = Config(k,c)
         self.todo = testParsed["todo"]
         self.files = testParsed["files"]
         self.name = testParsed["name"]
@@ -121,24 +121,26 @@ class TestPackage:
         dict = {}
         dict["name"] = self.name
         dict["tests"] = {}
+        dict["configs"] = {}
         for k,v in self.tests.items():
-            dict["tests"][k]=v.toDict()
-        dict["configs"] = self.configs
+            dict["tests"][k] = v.toDict()
+        for k,v in self.configs.items():
+            dict["configs"][k] = v.toDict()
         dict["todo"] = self.todo
         dict["files"] = self.files
 
         return dict
 
-    def saveToFile(self,path=""):
+    def saveToFile(self, path=""):
 
         if path == "":
             path= self.path
-        try:
-            file = json.dumps(self.toDict(), indent=3)
-            f = open (path, "w")
-            f.write(file)
-        except:
-            raise ValueError
+        #try:
+        file = json.dumps(self.toDict(), indent=3)
+        f = open (path, "w")
+        f.write(file)
+        #except:
+        #    raise ValueError
 
     def appendNewTest(self, name, scriptPath, description):
         self.tests[name] = Test(name=name)

@@ -28,30 +28,31 @@ class newconfig(command):
 
     def execute(self, args, environ, context):
         if len(args) != 5 and len(args) != 4:
-            self.println("Usage: newconfig script <name> <enableScript> <disableScript>")
-            self.println("          newconfig package <PackageName> <ConfigName>")
+            self.println("Usage: newconfig <name> script <enableScript> <disableScript>")
+            self.println("          newconfig <ConfigName> package <PackageName>")
             return 1
 
-        command = args[1]
-        name = args[2]
+        command = args[2]
+        name = args[1]
         enableScript = args[3]
-        disableScript = args[4]
+        if len(args) == 5:
+            disableScript = args[4]
 
-        importEScript = importDScript = True
+        importEScript = importDScript = False
         if command == "script":
-            if enableScript in context["package"].files:
+            if enableScript not in context["package"].files:
                 if not checkPathExists(enableScript):
                     self.println("Enable script not found.")
                     return 2
-                importEScript = False
+                importEScript = True
 
-            if enableScript in context["package"].files:
+            if enableScript not in context["package"].files:
                 if not checkPathExists(disableScript):
                     self.println("Disable script not found.")
                     return 2
-                importDScript = False
+                importDScript = True
 
-            description = input("Please enter this test description: ")
+            description = input("Please enter this configuration description: ")
             if importEScript:
                 importfile().execute(["importfile",enableScript],environ,context)
             if importDScript:
@@ -62,7 +63,7 @@ class newconfig(command):
             return 0
 
         elif command == "package":
-            source = TestPackage("tests/"+name,name)
+            source = TestPackage("tests/"+enableScript,enableScript)
             if enableScript in context["package"].configs:
                 if not input("Configuration already present, do you want to overwrite? (y/n)").upper() == "Y":
                     self.println("Aborted")
@@ -72,7 +73,7 @@ class newconfig(command):
                 self.println("Required configuration not in source package.")
                 return 2
 
-            context["package"].copyConfigFromPackage(source,enableScript)
+            context["package"].copyConfigFromPackage(source, name)
 
             self.println("Import complete")
             return 0

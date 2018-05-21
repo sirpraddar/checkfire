@@ -1,6 +1,7 @@
 from os import getcwd
 import subprocess
 
+
 class Config:
     def __init__(self, name, dict = {}):
         self.name = name
@@ -36,3 +37,20 @@ class Config:
     def deactivate(self):
         wd = getcwd() + "/temp/"
         subprocess.run(wd + self.dscript, cwd=wd, stdout=subprocess.DEVNULL)
+
+    def __str__(self):
+        text = ""
+        text += "Configuration {}\n".format(self.name)
+        text += "{}\n".format(self.description)
+        text += "Enable script file: {}\n".format(self.escript)
+        text += "Disable script file: {}\n".format(self.dscript)
+        text += "Required params:\n"
+        for i in self.rparams:
+            text +=" {} ".format(i)
+        text += "\n"
+        text += "Files required: "
+        for i in self.require:
+            text += " {} ".format(i)
+        text +="\n"
+
+        return text
