@@ -3,8 +3,8 @@ import subprocess
 
 
 class Test:
-    def __init__(self, dictLoaded={}, name=""):
-        self.name = ''
+    def __init__(self, dictLoaded={}, name=''):
+        self.name = name
         self.description = ''
         self.script = ''
         self.configs = []
@@ -12,8 +12,8 @@ class Test:
         self.tparams = {}
         self.negate = False
 
-        if dictLoaded != {} and name != "":
-            self.name = name
+        if dictLoaded != {}:
+            #self.name = name
             self.description = dictLoaded["description"]
             self.script = dictLoaded["script"]
             self.configs = dictLoaded["configs"]

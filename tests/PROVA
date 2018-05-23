@@ -35,7 +35,7 @@
          "negate": false
       },
       "GoodPy": {
-         "name": "",
+         "name": "GoodPy",
          "description": "This test always succedes.",
          "script": "good.py",
          "configs": [],
@@ -44,7 +44,28 @@
          "negate": false
       }
    },
-   "configs": {},
+   "configs": {
+      "testest": {
+         "name": "testest",
+         "escript": "good.py",
+         "dscript": "good.py",
+         "require": [],
+         "description": "testestest",
+         "rparams": [
+            "http_proxy"
+         ],
+         "cparams": {}
+      },
+      "http_proxy": {
+         "name": "http_proxy",
+         "escript": "good.py",
+         "dscript": "good.py",
+         "require": [],
+         "description": "sets the http_proxy environment variable.",
+         "rparams": [],
+         "cparams": {}
+      }
+   },
    "todo": [
       "PEnv",
       "FailPy",
@@ -55,7 +76,6 @@
       "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",
       "fail.py": "IyEvdXNyL2Jpbi9weXRob24zCnByaW50ICgidGVzdCBmYWxsaW1lbnRvIikKZXhpdCgxKQ==",
       "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
-      "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk=",
-      "GoodPy": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk="
+      "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk="
    }
 }

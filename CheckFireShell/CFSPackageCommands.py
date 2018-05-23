@@ -104,7 +104,7 @@ class newtest (command):
                     self.println("Script not found in package or invalid path.")
                     return 2
                 description = input("Please enter this test description: ")
-                importfile().execute(["importfile",script],environ,context)
+                #importfile().execute(["importfile",script],environ,context)
                 context["package"].appendNewTest(name,script,description)
 
             self.println("Script created.")

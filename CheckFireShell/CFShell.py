@@ -39,6 +39,7 @@ class CFShell:
             'tedit':tedit,
             'newconfig':newconfig,
             'rparam':rparam,
+            'cparam':cparam,
         }
         self.environ = {}
         self.context = {
