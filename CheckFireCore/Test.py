@@ -80,6 +80,7 @@ class Test:
         result = subprocess.run(wd+self.script,cwd=wd,stdout=subprocess.PIPE)
 
         for k,_ in self.tparams:
-            ShellEnviron.pop(k)
+            if k in ShellEnviron:
+                ShellEnviron.pop(k)
 
         return (result.returncode, result.stdout.decode("ascii"))
