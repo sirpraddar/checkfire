@@ -68,7 +68,7 @@ class tparam (command):
                 self.println ("parameter not present in test")
                 return 2
             context["test"].tparams[name] = value
-        elif action == "delete":
+        elif action == "delete" and name in context["test"].tparams:
             context["test"].tparams.pop(name)
         elif action == "clear":
             context["test"].tparams[name] = ""
