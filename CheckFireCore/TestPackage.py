@@ -203,18 +203,20 @@ class TestPackage:
     def __str__(self):
         text = ""
         text += "Showing info for package " + self.name + "\n"
+
+        text += "Test sequence: "
+        for i in self.todo:
+            text += "{} ".format(i)
+
+        text += '\n'
         text += "Test List:\n"
         for j,i in self.tests.items():
             text += "   {}: {}\n".format(j,i.description)
         text += '\n'
 
-        text += "Test sequence: "
-        for i in self.todo:
-            text += "{} ".format(i)
-        text += "\n"
-        text += "Config List:"
+        text += "Config List:\n"
         for j,i in self.configs.items():
-            text += "   {}\n".format(j)
+            text += "   {}: {}\n".format(j, i.description)
         text += '\n'
 
         text += "Included files:\n"
