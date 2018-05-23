@@ -79,7 +79,7 @@ class Test:
         #Exec test script
         result = subprocess.run(wd+self.script,cwd=wd,stdout=subprocess.PIPE)
 
-        for k,_ in self.tparams:
+        for k,_ in self.tparams.items():
             if k in ShellEnviron:
                 ShellEnviron.pop(k)
 

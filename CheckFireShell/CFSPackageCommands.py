@@ -90,12 +90,12 @@ class newtest (command):
 
     def execute(self, args, environ, context):
         if len(args) != 4:
-            self.println("Usage: newtest script <name> <scriptname>")
-            self.println("          newtest package <PackageName> <TestName>")
+            self.println("Usage: newtest <name> script <scriptname>")
+            self.println("          newtest <TestName> package <PackageName>")
             return 1
 
-        command = args[1]
-        name = args[2]
+        command = args[2]
+        name = args[1]
         script = args[3]
 
         if command == "script":
