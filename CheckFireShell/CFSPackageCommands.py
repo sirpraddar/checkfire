@@ -151,6 +151,26 @@ class deletetest(command):
         return 0
 
 
+class deleteconfig(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) != 2:
+            self.println("Usage: deleteconfig <ConfigurationName>")
+            return 2
+
+        name = args[1]
+
+        if name not in context["package"].configs:
+            self.println("Configuration not found in package.")
+            return 1
+
+        context["package"].configs.pop(name)
+        self.println("Configuration deleted.")
+        return 0
+
+
 class deletefile(command):
     def getContextSpace(self):
         return self.CONTEXT_PACKAGE

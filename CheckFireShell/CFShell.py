@@ -36,6 +36,7 @@ class CFShell:
             'go': go,
             'deletefile': deletefile,
             'deletetest': deletetest,
+            'deleteconfig': deleteconfig,
             'tedit':tedit,
             'newconfig':newconfig,
             'rparam':rparam,

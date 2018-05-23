@@ -204,10 +204,11 @@ class TestPackage:
         text = ""
         text += "Showing info for package " + self.name + "\n"
 
-        text += "Test sequence: "
+        testSeq = "Test sequence: "
         for i in self.todo:
-            text += "{} ".format(i)
+            testSeq += "{} ".format(i)
 
+        text += bcolors.colorString(testSeq, bcolors.YELLOW)
         text += '\n'
         text += "Test List:\n"
         for j,i in self.tests.items():
