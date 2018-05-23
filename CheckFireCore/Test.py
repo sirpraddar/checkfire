@@ -26,7 +26,7 @@ class Test:
         text += "Test {}\n".format(self.name)
         text += "{}\n".format(self.description)
         text += "Script file: {}\n".format(self.script)
-        text += "Params:\n"
+        text += "Test Params:\n"
         for i,j in self.tparams.items():
             text +="    {} = {}\n".format(i,j)
         text += "\nConfigs required: "
