@@ -1,0 +1,54 @@
+{
+   "name": "TestLib",
+   "tests": {
+      "ping": {
+         "name": "ping",
+         "description": "Ping a host.",
+         "script": "ping.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {
+            "DESTIP": "127.0.0.2",
+            "COUNT": "2"
+         },
+         "negate": false
+      },
+      "PEnv": {
+         "name": "PEnv",
+         "description": "Prints environment of the script to test env setting.",
+         "script": "printEnv.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {},
+         "negate": false
+      },
+      "GoodPy": {
+         "name": "GoodPy",
+         "description": "This test always succedes.",
+         "script": "good.py",
+         "configs": [],
+         "require": [],
+         "tparams": {},
+         "negate": false
+      },
+      "wget": {
+         "name": "wget",
+         "description": "wgets an url.",
+         "script": "http-wget.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {
+            "URL": "http://pradelli.eu"
+         },
+         "negate": false
+      }
+   },
+   "configs": {},
+   "todo": [],
+   "files": {
+      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",
+      "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
+      "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk=",
+      "http-wget.sh": "IyEvYmluL2Jhc2gKCndnZXQgLXFPLSAkVVJMICY+L2Rldi9udWxsCg=="
+   }
+}
