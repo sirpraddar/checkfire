@@ -6,6 +6,7 @@ from pygments.token import Token
 from CheckFireShell.CFSCommands import *
 from CheckFireShell.CFSTestCommands import *
 from CheckFireShell.CFSPackageCommands import *
+from CheckFireShell.CFSConfigCommands import *
 from CheckFireShell.CFSHelp import help
 from CheckFireCore.TestPackage import TestPackage
 from CheckFireCore.bcolors import bcolors
@@ -37,6 +38,7 @@ class CFShell:
             'deletetest': deletetest,
             'tedit':tedit,
             'newconfig':newconfig,
+            'rparam':rparam,
         }
         self.environ = {}
         self.context = {
@@ -133,6 +135,8 @@ class CFShell:
     def getCompleter(self):
         if "test" in self.context:
             return WordCompleter(self.sorted.testSpace, ignore_case=True, )
+        elif "config" in self.context:
+            return WordCompleter(self.sorted.configSpace, ignore_case=True, )
         elif self.context["package"].loaded:
             return WordCompleter(self.sorted.packageSpace, ignore_case=True, )
         else:
@@ -145,6 +149,7 @@ class contextSorter():
         self.globalSpace = []
         self.packageSpace = []
         self.testSpace = []
+        self.configSpace = []
 
         for k,v in commands.items():
             from CheckFireShell.CFSCommands import command
@@ -154,3 +159,5 @@ class contextSorter():
                 self.packageSpace.append(k)
             if v().getContextSpace() & command.CONTEXT_TEST:
                 self.testSpace.append(k)
+            if v().getContextSpace() & command.CONTEXT_CONFIG:
+                self.configSpace.append(k)
