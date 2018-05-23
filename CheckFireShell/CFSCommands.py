@@ -7,6 +7,7 @@ class command ():
     CONTEXT_GLOBAL = 1
     CONTEXT_PACKAGE = 2
     CONTEXT_TEST = 4
+    CONTEXT_CONFIG = 8
 
     def __init__(self):
         self.stdout = ""
@@ -67,7 +68,7 @@ class select (command):
 
 class deselect(command):
     def getContextSpace(self):
-        return self.CONTEXT_TEST
+        return self.CONTEXT_TEST + self.CONTEXT_CONFIG
 
     def execute(self, args, environ, context):
         try:
