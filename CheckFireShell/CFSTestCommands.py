@@ -49,7 +49,7 @@ class tparam (command):
             return 2
 
         action = args[1].lower()
-        name = args[2].upper()
+        name = args[2]
         if len(args) == 4:
             value = args[3]
         else:
