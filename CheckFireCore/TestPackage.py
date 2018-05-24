@@ -44,21 +44,36 @@ class TestPackage:
         successes = 0
         fails = 0
         skipped = 0
+
+
+        for c in self.activeConfigs:
+            self.expandFiles(self.configs[c].getRequiredFiles())
+
+
         for i in self.todo:
             curTest = self.tests[i]
             print("{}{:<40}{}".format(bcolors.HEADER,i,bcolors.ENDC), end="")
             #sys.stdout.flush()
             #prepare environment for execution
 
+            for c in curTest.configs:
+                for k in self.configs[c].rparams:
+                    if k not in curTest.tparams:
+                        return (-2, "Missing config parameter {}\n".format(k))
+
             self.expandFiles(curTest.getRequiredFiles())
+            for c in curTest.configs:
+                self.expandFiles(self.configs[c].getRequiredFiles())
 
             for c in self.activeConfigs:
                 if c not in curTest.configs:
                     self.configs[c].deactivate()
+                    self.activeConfigs.remove(c)
 
             for k in curTest.configs:
                 if k not in self.activeConfigs:
                     self.configs[k].activate()
+                    self.activeConfigs.append(k)
 
             result = self.tests[i].execTest()
             if result[0] == 0:
@@ -82,6 +97,7 @@ class TestPackage:
         for i in self.createdFiles:
             try:
                 remove("temp/" + i)
+                self.createdFiles.remove(i)
             except FileNotFoundError:
                 pass
 
@@ -110,7 +126,7 @@ class TestPackage:
             self.tests[k] = Test(v,k)
         #self.tests = testParsed["tests"]
         for k,c in testParsed["configs"].items():
-            self.configs[k] = Config(k,v)
+            self.configs[k] = Config(k,c)
         self.todo = testParsed["todo"]
         self.files = testParsed["files"]
         self.name = testParsed["name"]
@@ -121,45 +137,69 @@ class TestPackage:
         dict = {}
         dict["name"] = self.name
         dict["tests"] = {}
+        dict["configs"] = {}
         for k,v in self.tests.items():
-            dict["tests"][k]=v.toDict()
-        dict["configs"] = self.configs
+            dict["tests"][k] = v.toDict()
+        for k,v in self.configs.items():
+            dict["configs"][k] = v.toDict()
         dict["todo"] = self.todo
         dict["files"] = self.files
 
         return dict
 
-    def saveToFile(self,path=""):
+    def saveToFile(self, path=""):
 
         if path == "":
             path= self.path
-        try:
-            file = json.dumps(self.toDict(), indent=3)
-            f = open (path, "w")
-            f.write(file)
-        except:
-            raise ValueError
+        #try:
+        file = json.dumps(self.toDict(), indent=3)
+        f = open (path, "w")
+        f.write(file)
+        #except:
+        #    raise ValueError
 
     def appendNewTest(self, name, scriptPath, description):
-        self.tests[name] = Test()
+        self.tests[name] = Test(name=name)
         scriptName = Path(scriptPath).name
         self.tests[name].script = scriptName
         self.tests[name].description = description
         textb64 = base64.b64encode(open(scriptPath, "rb").read())
-        self.files[name] = textb64.decode("ascii")
+        self.files[scriptName] = textb64.decode("ascii")
+
+    def renameTest(self,oldname,newname):
+        if oldname in self.tests:
+            backup = self.tests[oldname]
+            self.tests.pop(oldname)
+            backup.name = newname
+            self.tests[newname] = backup
 
     def appendNewConfig(self,name, escript, dscript, description):
-        pass
+        conf = Config(name)
+        if escript not in self.files:
+            self.importFile(escript)
+        if dscript not in self.files:
+            self.importFile(dscript)
+
+        escript = Path(escript).name
+        dscript = Path(dscript).name
+
+        conf.dscript = dscript
+        conf.escript = escript
+        conf.description = description
+
+        self.configs[name] = conf
 
     def copyTestFromPackage (self, sourcePack, name):
         test = sourcePack.tests[name]
         for i in test.require:
             self.files[i] = sourcePack.files[i]
         for i in test.configs:
-            self.configs[i] = sourcePack.configs[i]
-            self.files[sourcePack.configs[i]["EScript"]] = sourcePack.files[sourcePack.configs[i]["EScript"]]
-            self.files[sourcePack.configs[i]["DScript"]] = sourcePack.files[sourcePack.configs[i]["DScript"]]
-            for j in i.require:
+            #self.configs[i] = sourcePack.configs[i]
+            #self.files[sourcePack.configs[i].escript] = sourcePack.files[sourcePack.configs[i].escript]
+            #self.files[sourcePack.configs[i].dscript] = sourcePack.files[sourcePack.configs[i].dscript]
+
+            self.copyConfigFromPackage(sourcePack,i)
+            for j in self.configs[i].require:
                 self.files[j] = sourcePack.files[j]
         self.files[test.script] = sourcePack.files[test.script]
         self.tests[name] = test
@@ -181,18 +221,21 @@ class TestPackage:
     def __str__(self):
         text = ""
         text += "Showing info for package " + self.name + "\n"
+
+        testSeq = "Test sequence: "
+        for i in self.todo:
+            testSeq += "{} ".format(i)
+
+        text += bcolors.colorString(testSeq, bcolors.YELLOW)
+        text += '\n'
         text += "Test List:\n"
         for j,i in self.tests.items():
             text += "   {}: {}\n".format(j,i.description)
         text += '\n'
 
-        text += "Test sequence: "
-        for i in self.todo:
-            text += "{} ".format(i)
-        text += "\n"
-        text += "Config List:"
+        text += "Config List:\n"
         for j,i in self.configs.items():
-            text += "   {}\n".format(j)
+            text += "   {}: {}\n".format(j, i.description)
         text += '\n'
 
         text += "Included files:\n"

@@ -28,43 +28,42 @@ class newconfig(command):
 
     def execute(self, args, environ, context):
         if len(args) != 5 and len(args) != 4:
-            self.println("Usage: newconfig script <name> <enableScript> <disableScript>")
-            self.println("          newconfig package <PackageName> <ConfigName>")
+            self.println("Usage: newconfig <name> script <enableScript> <disableScript>")
+            self.println("          newconfig <ConfigName> package <PackageName>")
             return 1
 
-        command = args[1]
-        name = args[2]
+        command = args[2]
+        name = args[1]
         enableScript = args[3]
-        disableScript = args[4]
+        if len(args) == 5:
+            disableScript = args[4]
 
-        importEScript = importDScript = True
+        importEScript = importDScript = False
         if command == "script":
-            if enableScript in context["package"].files:
+            if enableScript not in context["package"].files:
                 if not checkPathExists(enableScript):
                     self.println("Enable script not found.")
                     return 2
-                importEScript = False
+                importEScript = True
 
-            if enableScript in context["package"].files:
+            if enableScript not in context["package"].files:
                 if not checkPathExists(disableScript):
                     self.println("Disable script not found.")
                     return 2
-                importDScript = False
+                importDScript = True
 
-            description = input("Please enter this test description: ")
+            description = input("Please enter this configuration description: ")
             if importEScript:
                 importfile().execute(["importfile",enableScript],environ,context)
             if importDScript:
                 importfile().execute(["importfile", disableScript], environ, context)
 
-
-            context["package"].appendNewConfig(name,enableScript,disableScript)
-
-            self.println("Script created.")
+            context["package"].appendNewConfig(name,enableScript,disableScript,description)
+            self.println("Config created.")
             return 0
 
         elif command == "package":
-            source = TestPackage("tests/"+name,name)
+            source = TestPackage("tests/"+enableScript,enableScript)
             if enableScript in context["package"].configs:
                 if not input("Configuration already present, do you want to overwrite? (y/n)").upper() == "Y":
                     self.println("Aborted")
@@ -74,7 +73,7 @@ class newconfig(command):
                 self.println("Required configuration not in source package.")
                 return 2
 
-            context["package"].copyConfigFromPackage(source,enableScript)
+            context["package"].copyConfigFromPackage(source, name)
 
             self.println("Import complete")
             return 0
@@ -91,12 +90,12 @@ class newtest (command):
 
     def execute(self, args, environ, context):
         if len(args) != 4:
-            self.println("Usage: newtest script <name> <scriptname>")
-            self.println("          newtest package <PackageName> <TestName>")
+            self.println("Usage: newtest <name> script <scriptname>")
+            self.println("          newtest <TestName> package <PackageName>")
             return 1
 
-        command = args[1]
-        name = args[2]
+        command = args[2]
+        name = args[1]
         script = args[3]
 
         if command == "script":
@@ -105,24 +104,24 @@ class newtest (command):
                     self.println("Script not found in package or invalid path.")
                     return 2
                 description = input("Please enter this test description: ")
-                importfile().execute(["importfile",script],environ,context)
+                #importfile().execute(["importfile",script],environ,context)
                 context["package"].appendNewTest(name,script,description)
 
             self.println("Script created.")
             return 0
 
         elif command == "package":
-            source = TestPackage("tests/"+name,name)
-            if script in context["package"].tests:
+            source = TestPackage("tests/"+script,script)
+            if name in context["package"].tests:
                 if not input("Test already present, do you want to overwrite? (y/n)").upper() == "Y":
                     self.println("Aborted")
                     return 1
 
-            if script not in source.tests:
+            if name not in source.tests:
                 self.println("Required test not in source package.")
                 return 2
 
-            context["package"].copyTestFromPackage(source,script)
+            context["package"].copyTestFromPackage(source,name)
 
             self.println("Import complete")
             return 0
@@ -130,6 +129,83 @@ class newtest (command):
         else:
             self.println("Please use script or package only.")
             return 2
+
+
+class deletetest(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) != 2:
+            self.println("Usage: deletetest <TestName>")
+            return 2
+
+        name = args[1]
+
+        if name not in context["package"].tests:
+            self.println("Test not found in package.")
+            return 1
+
+        context["package"].tests.pop(name)
+        self.println("Test deleted.")
+        return 0
+
+
+class deleteconfig(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) != 2:
+            self.println("Usage: deleteconfig <ConfigurationName>")
+            return 2
+
+        name = args[1]
+
+        if name not in context["package"].configs:
+            self.println("Configuration not found in package.")
+            return 1
+
+        context["package"].configs.pop(name)
+        self.println("Configuration deleted.")
+        return 0
+
+
+class deletefile(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) != 2:
+            self.println("Usage: deletefile <FileName>")
+            return 2
+
+        name = args[1]
+
+        if name not in context["package"].files:
+            self.println("File not found in package.")
+            return 1
+
+        for k,i in context["package"].tests.items():
+            if i.script == name:
+                self.println("Can't delete, file {} is the {} test script.".format(name,k))
+                return 1
+            for j in i.require:
+                if j == name:
+                    self.println("Can't delete, file {} is required by {}".format(name,k))
+
+        for k, i in context["package"].configs.items():
+            if i.escript == name or i.dscript == name:
+                self.println("Can't delete, file {} is the {} config script.".format(name, k))
+                return 1
+            for j in i.require:
+                if j == name:
+                    self.println("Can't delete, file {} is required by {}".format(name, k))
+                    return 1
+
+        context["package"].files.pop(name)
+        self.println("File deleted.")
+        return 0
 
 
 class clonetest(command):
@@ -158,7 +234,7 @@ class testlist (command):
         return self.CONTEXT_PACKAGE | self.CONTEXT_TEST
 
     def execute(self, args, environ, context):
-        if len(args) > 4 or len(args) == 1:
+        if len(args) > 4 or len(args) <= 2 :
             self.println("Usage: testlist add|remove|move [<TestName>] [<Position>]")
             return 1
 

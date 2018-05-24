@@ -1,5 +1,40 @@
 from .CFSCommands import command
 
+
+class tedit (command):
+    def getContextSpace(self):
+        return self.CONTEXT_TEST
+
+    def execute(self, args, environ, context):
+        if len(args) != 3:
+            self.println("Usage: tedit name|desc <Value>")
+            self.println("       tedit negate true|false|0|1")
+            return 2
+
+        command = args[1]
+        value = args[2]
+
+        if command == "name":
+            context["package"].renameTest(context["test"].name,value)
+            return 0
+        elif command == "desc":
+            context["test"].description = value
+            return 0
+        elif command == "negate":
+            if value == "true" or value == 1:
+                context["test"].negate = True
+                return 0
+            elif value == "false" or value == 0:
+                context["test"].negate = False
+                return 0
+            else:
+                self.println("Please use true|1 or false|0")
+                return 1
+        else:
+            self.println("Option not recognized. Please use name,description,script,negate")
+            return 1
+
+
 class tparam (command):
     def getContextSpace(self):
         return self.CONTEXT_TEST
@@ -14,7 +49,7 @@ class tparam (command):
             return 2
 
         action = args[1].lower()
-        name = args[2].upper()
+        name = args[2]
         if len(args) == 4:
             value = args[3]
         else:
@@ -33,7 +68,7 @@ class tparam (command):
                 self.println ("parameter not present in test")
                 return 2
             context["test"].tparams[name] = value
-        elif action == "delete":
+        elif action == "delete" and name in context["test"].tparams:
             context["test"].tparams.pop(name)
         elif action == "clear":
             context["test"].tparams[name] = ""
@@ -78,7 +113,8 @@ class tconfig(command):
 
     def execute(self, args, environ, context):
         if len(args) !=3:
-            self.println("Usage: tconfig add|delete <ConfigName>")
+            self.println("Usage: tconfig need|dontneed <ConfigName>")
+            return 1
 
         command = args[1]
         config = args[2]
@@ -86,21 +122,18 @@ class tconfig(command):
         if not context["package"].loaded or "test" not in context:
             self.println ("You have to select a test first")
             return 2
-        if command == "add":
+        if command == "need":
             if config not in context["package"].configs:
                 self.println("Specified file not in package, you must import it first.")
                 return 2
             context["test"].configs.append(config)
             self.println("Config successfully added.")
             return 0
-        elif command == "delete":
-            if config in context["test"].config:
-                context["test"].remove(config)
+        elif command == "dontneed":
+            if config in context["test"].configs:
+                context["test"].configs.remove(config)
                 self.println("Config successfully unlinked from test.")
                 return 0
         else:
             self.println("Please use add or delete")
             return 2
-
-
-

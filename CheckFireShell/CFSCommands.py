@@ -7,6 +7,7 @@ class command ():
     CONTEXT_GLOBAL = 1
     CONTEXT_PACKAGE = 2
     CONTEXT_TEST = 4
+    CONTEXT_CONFIG = 8
 
     def __init__(self):
         self.stdout = ""
@@ -37,7 +38,7 @@ class select (command):
 
     def execute(self, args, environ, context):
         if len(args) != 2:
-            self.println("Usage: select <TestName>")
+            self.println("Usage: select <TestName>|<ConfigName>")
             return 1
         if not context["package"].loaded:
             self.println("No package loaded, please load a test package first.")
@@ -46,19 +47,38 @@ class select (command):
         test = args[1]
         if test in package.tests:
             test = context["package"].tests[test]
-            context["test"]=test
+            context["test"] = test
+            try:
+                context.pop("config")
+            except KeyError:
+                pass
+        elif test in package.configs:
+            test = context["package"].configs[test]
+            context["config"] = test
+            try:
+                context.pop("test")
+            except KeyError:
+                pass
         else:
-            self.println("test not found in package.")
+            self.println("test or configuration not found in package.")
             return 1
+
         return 0
 
 
 class deselect(command):
     def getContextSpace(self):
-        return self.CONTEXT_TEST
+        return self.CONTEXT_TEST + self.CONTEXT_CONFIG
 
     def execute(self, args, environ, context):
-        context.pop("test")
+        try:
+            context.pop("test")
+        except KeyError:
+            pass
+        try:
+            context.pop("config")
+        except KeyError:
+            pass
         return 0
 
 
@@ -72,6 +92,8 @@ class use(command):
             return 1
         path = "tests/"+args[1]
         if checkPathExists(path):
+            from CheckFireCore.TestPackage import  TestPackage
+            context["package"] = TestPackage()
             context["package"].loadFromFile(path)
             return 0
         else:
@@ -92,8 +114,14 @@ class info(command):
         elif context["package"].loaded and test == "." and "test" in context:
             self.print(str(context["test"]))
             return 0
+        elif context["package"].loaded and test == "." and "config" in context:
+            self.print(str(context["config"]))
+            return 0
         elif context["package"].loaded and test in context["package"].tests:
             self.print(str(context["package"].tests[test]))
+            return 0
+        elif context["package"].loaded and test in context["package"].configs:
+            self.print(str(context["package"].configs[test]))
             return 0
         elif context["package"].loaded:
             self.println("The package does not contain specified test, sorry")
