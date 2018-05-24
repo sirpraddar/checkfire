@@ -44,21 +44,36 @@ class TestPackage:
         successes = 0
         fails = 0
         skipped = 0
+
+
+        for c in self.activeConfigs:
+            self.expandFiles(self.configs[c].getRequiredFiles())
+
+
         for i in self.todo:
             curTest = self.tests[i]
             print("{}{:<40}{}".format(bcolors.HEADER,i,bcolors.ENDC), end="")
             #sys.stdout.flush()
             #prepare environment for execution
 
+            for c in curTest.configs:
+                for k in self.configs[c].rparams:
+                    if k not in curTest.tparams:
+                        return (-2, "Missing config parameter {}\n".format(k))
+
             self.expandFiles(curTest.getRequiredFiles())
+            for c in curTest.configs:
+                self.expandFiles(self.configs[c].getRequiredFiles())
 
             for c in self.activeConfigs:
                 if c not in curTest.configs:
                     self.configs[c].deactivate()
+                    self.activeConfigs.remove(c)
 
             for k in curTest.configs:
                 if k not in self.activeConfigs:
                     self.configs[k].activate()
+                    self.activeConfigs.append(k)
 
             result = self.tests[i].execTest()
             if result[0] == 0:
@@ -82,6 +97,7 @@ class TestPackage:
         for i in self.createdFiles:
             try:
                 remove("temp/" + i)
+                self.createdFiles.remove(i)
             except FileNotFoundError:
                 pass
 
@@ -178,10 +194,12 @@ class TestPackage:
         for i in test.require:
             self.files[i] = sourcePack.files[i]
         for i in test.configs:
-            self.configs[i] = sourcePack.configs[i]
-            self.files[sourcePack.configs[i]["EScript"]] = sourcePack.files[sourcePack.configs[i]["EScript"]]
-            self.files[sourcePack.configs[i]["DScript"]] = sourcePack.files[sourcePack.configs[i]["DScript"]]
-            for j in i.require:
+            #self.configs[i] = sourcePack.configs[i]
+            #self.files[sourcePack.configs[i].escript] = sourcePack.files[sourcePack.configs[i].escript]
+            #self.files[sourcePack.configs[i].dscript] = sourcePack.files[sourcePack.configs[i].dscript]
+
+            self.copyConfigFromPackage(sourcePack,i)
+            for j in self.configs[i].require:
                 self.files[j] = sourcePack.files[j]
         self.files[test.script] = sourcePack.files[test.script]
         self.tests[name] = test

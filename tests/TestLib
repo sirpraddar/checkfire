@@ -41,9 +41,34 @@
             "URL": "http://pradelli.eu"
          },
          "negate": false
+      },
+      "wget-proxy": {
+         "name": "wget-proxy",
+         "description": "wgets an url using a proxy.",
+         "script": "http-wget.sh",
+         "configs": [
+            "http_proxy"
+         ],
+         "require": [],
+         "tparams": {
+            "URL": "http://www.parrocchiadimaranello.com"
+         },
+         "negate": false
       }
    },
-   "configs": {},
+   "configs": {
+      "http_proxy": {
+         "name": "http_proxy",
+         "escript": "good.py",
+         "dscript": "good.py",
+         "require": [],
+         "description": "sets the http_proxy environment variable.",
+         "rparams": [],
+         "cparams": {
+            "http_proxy": "http://127.0.0.1:3128/"
+         }
+      }
+   },
    "todo": [],
    "files": {
       "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",

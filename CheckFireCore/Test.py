@@ -59,19 +59,11 @@ class Test:
         files = []
         files.append(self.script)
         files.extend(self.require)
-        for i in self.configs:
-            files.append(self.configs.escript)
-            files.append(self.configs.dscript)
-            for j in self.configs.require:
-                files.append(j)
         return files
 
     def execTest(self):
         wd = getcwd() + "/temp/"
-        for i in self.configs:
-            for k,_ in self.configs[i]["RParams"].items():
-                if k not in self.tparams:
-                    return (-2, "Missing config parameter {}\n".format(k))
+
 
         for k,p in self.tparams.items():
             ShellEnviron[k] = p

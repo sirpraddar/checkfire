@@ -111,17 +111,17 @@ class newtest (command):
             return 0
 
         elif command == "package":
-            source = TestPackage("tests/"+name,name)
-            if script in context["package"].tests:
+            source = TestPackage("tests/"+script,script)
+            if name in context["package"].tests:
                 if not input("Test already present, do you want to overwrite? (y/n)").upper() == "Y":
                     self.println("Aborted")
                     return 1
 
-            if script not in source.tests:
+            if name not in source.tests:
                 self.println("Required test not in source package.")
                 return 2
 
-            context["package"].copyTestFromPackage(source,script)
+            context["package"].copyTestFromPackage(source,name)
 
             self.println("Import complete")
             return 0
@@ -234,7 +234,7 @@ class testlist (command):
         return self.CONTEXT_PACKAGE | self.CONTEXT_TEST
 
     def execute(self, args, environ, context):
-        if len(args) > 4 or len(args) == 1:
+        if len(args) > 4 or len(args) <= 2 :
             self.println("Usage: testlist add|remove|move [<TestName>] [<Position>]")
             return 1
 

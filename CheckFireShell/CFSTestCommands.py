@@ -113,7 +113,8 @@ class tconfig(command):
 
     def execute(self, args, environ, context):
         if len(args) !=3:
-            self.println("Usage: tconfig add|delete <ConfigName>")
+            self.println("Usage: tconfig need|dontneed <ConfigName>")
+            return 1
 
         command = args[1]
         config = args[2]
@@ -121,16 +122,16 @@ class tconfig(command):
         if not context["package"].loaded or "test" not in context:
             self.println ("You have to select a test first")
             return 2
-        if command == "add":
+        if command == "need":
             if config not in context["package"].configs:
                 self.println("Specified file not in package, you must import it first.")
                 return 2
             context["test"].configs.append(config)
             self.println("Config successfully added.")
             return 0
-        elif command == "delete":
-            if config in context["test"].config:
-                context["test"].remove(config)
+        elif command == "dontneed":
+            if config in context["test"].configs:
+                context["test"].configs.remove(config)
                 self.println("Config successfully unlinked from test.")
                 return 0
         else:

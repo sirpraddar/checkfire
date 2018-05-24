@@ -32,6 +32,11 @@ class Config:
 
         return dict
 
+    def getRequiredFiles(self):
+        files = [self.escript, self.dscript]
+        for i in self.require:
+            files.append(i)
+        return files
 
     def activate(self):
         for k,v in self.cparams.items():
@@ -40,7 +45,7 @@ class Config:
         subprocess.run(wd + self.escript, cwd=wd, stdout=subprocess.DEVNULL)
 
     def deactivate(self):
-        for k,_ in self.cparams.items:
+        for k,_ in self.cparams.items():
             if k in ShellEnviron:
                 ShellEnviron.pop(k)
         wd = getcwd() + "/temp/"
