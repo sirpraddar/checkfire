@@ -70,6 +70,7 @@
       }
    },
    "todo": [],
+   "remoteToDo": {},
    "files": {
       "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",
       "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
