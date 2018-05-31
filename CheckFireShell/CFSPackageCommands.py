@@ -35,7 +35,6 @@ class go(command):
             print("{}[X]{}\nExit code:{}\n{}".format(bcolors.FAIL, bcolors.ENDC, exitCode, stdout))
 
 
-
 class newconfig(command):
     def getContextSpace(self):
         return self.CONTEXT_PACKAGE
@@ -289,6 +288,64 @@ class testlist (command):
         return 0
 
 
+class nodelist (command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) > 5 or len(args) <= 2 :
+            self.println("Usage: nodelist <Node> add|move|remove|delete [<TestName>] [<Position>]")
+            return 1
+
+        remote = args[1]
+        command = args[2]
+        name = ""
+        pos = -1
+
+        if remote in context["package"].remoteToDo:
+            todo = context["package"].remoteToDo[remote]
+        elif command == "add":
+            todo = []
+            context["package"].remoteToDo[remote] = todo
+
+        if len(args) > 3:
+            if type(args[3]) is int:
+                pos = int (args[3])
+            elif type(args[3]) is str:
+                name = args[3]
+                if len(args) == 5:
+                    pos = int(args[4])
+
+        if command == "add":
+            if name not in context["package"].tests:
+                self.println("Test not in package.")
+                return 2
+
+            if pos >= 0 and pos < len(todo):
+                todo.insert(pos,name)
+            else:
+                todo.append(name)
+        elif command == "remove":
+            if name not in context["package"].todo:
+                self.println("Test not in this ToDo list")
+                return 2
+            todo.remove(name)
+            if not todo:
+                context["package"].remoteToDo.pop(remote)
+        elif command == "move":
+            if name not in todo or pos < 0 or pos > len(todo):
+                self.println("Test not in todo list or position not valid.")
+                return 2
+            todo.remove(name)
+            todo.insert(pos,name)
+        elif command == "delete":
+            if remote not in context["package"].remoteToDo:
+                self.println("Non existant ToDo list.")
+                return 2
+            context["package"].remoteToDo.pop(remote)
+        return 0
+
+
 class newpackage(command):
     def getContextSpace(self):
         return self.CONTEXT_GLOBAL
@@ -304,5 +361,3 @@ class newpackage(command):
         context["package"] = newpack
 
         return 0
-
-

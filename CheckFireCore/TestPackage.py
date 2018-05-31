@@ -12,12 +12,13 @@ def validatePath(path):
     if not Path(path).is_file():
         raise ValueError
 
+
 def defCallback(test, retCode, stdout):
     pass
 
+
 class TestPackage:
     def __init__(self,path="",name=""):
-
         self.name = name
         self.loaded = False
         self.tests = {}
@@ -43,26 +44,17 @@ class TestPackage:
     def executeLocalTests(self, callback=defCallback):
         wd = getcwd() + "/temp/"
         print("Executing Tests:")
-        successes = 0
-        fails = 0
-        skipped = 0
-        #        successes,fails,skipped
         report = {
             "success": 0,
             "fails": 0,
             "skipped": 0
         }
 
-
         for c in self.__activeConfigs:
             self.expandFiles(self.configs[c].getRequiredFiles())
 
-
         for i in self.todo:
             curTest = self.tests[i]
-            #sys.stdout.flush()
-            #prepare environment for execution
-
             for c in curTest.configs:
                 for k in self.configs[c].rparams:
                     if k not in curTest.tparams:
@@ -96,7 +88,6 @@ class TestPackage:
         self.cleanTemp()
         return report
 
-
     def cleanTemp(self):
         for i in self.__createdFiles:
             try:
@@ -104,7 +95,6 @@ class TestPackage:
                 self.__createdFiles.remove(i)
             except FileNotFoundError:
                 pass
-
 
     def expandFiles(self, names):
         for i in names:
@@ -128,7 +118,6 @@ class TestPackage:
             return
         for k,v in testParsed["tests"].items():
             self.tests[k] = Test(v,k)
-        #self.tests = testParsed["tests"]
         for k,c in testParsed["configs"].items():
             self.configs[k] = Config(k,c)
         self.todo = testParsed["todo"]
@@ -154,15 +143,11 @@ class TestPackage:
         return dict
 
     def saveToFile(self, path=""):
-
         if path == "":
             path= self.path
-        #try:
         file = json.dumps(self.toDict(), indent=3)
         f = open (path, "w")
         f.write(file)
-        #except:
-        #    raise ValueError
 
     def appendNewTest(self, name, scriptPath, description):
         self.tests[name] = Test(name=name)
@@ -200,10 +185,6 @@ class TestPackage:
         for i in test.require:
             self.files[i] = sourcePack.files[i]
         for i in test.configs:
-            #self.configs[i] = sourcePack.configs[i]
-            #self.files[sourcePack.configs[i].escript] = sourcePack.files[sourcePack.configs[i].escript]
-            #self.files[sourcePack.configs[i].dscript] = sourcePack.files[sourcePack.configs[i].dscript]
-
             self.copyConfigFromPackage(sourcePack,i)
             for j in self.configs[i].require:
                 self.files[j] = sourcePack.files[j]
@@ -226,25 +207,33 @@ class TestPackage:
 
     def __str__(self):
         text = ""
-        text += "Showing info for package " + self.name + "\n"
+        text += bcolors.colorString("Showing info for package " + self.name + "\n",bcolors.BOLD)
 
-        testSeq = "Test sequence: "
+        testSeq = bcolors.colorString("Local Test sequence: ", bcolors.BOLD)
         for i in self.todo:
             testSeq += "{} ".format(i)
 
         text += bcolors.colorString(testSeq, bcolors.YELLOW)
-        text += '\n'
-        text += "Test List:\n"
+
+        text += bcolors.colorString("\nRemote tests sequences:\n",bcolors.BOLD)
+
+        c = 0
+        for k,l in self.remoteToDo.items():
+            testSeq = "REMOTE {} :: ".format(k)
+            for m in l:
+                testSeq += "{} ".format(m)
+            text += bcolors.colorString(testSeq,bcolors.CYAN if c % 2 else bcolors.YELLOW) + "\n"
+            c += 1
+
+        text += bcolors.colorString("\nTest List:\n",bcolors.BOLD)
         for j,i in self.tests.items():
             text += "   {}: {}\n".format(j,i.description)
-        text += '\n'
 
-        text += "Config List:\n"
+        text += bcolors.colorString("\nConfig List:\n",bcolors.BOLD)
         for j,i in self.configs.items():
             text += "   {}: {}\n".format(j, i.description)
-        text += '\n'
 
-        text += "Included files:\n"
+        text += bcolors.colorString("\nIncluded files:\n",bcolors.BOLD)
         for j,i in self.files.items():
             text += "   {}\n".format(j)
         text += '\n'

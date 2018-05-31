@@ -41,6 +41,7 @@ class CFShell:
             'rparam':rparam,
             'cparam':cparam,
             'tconfig':tconfig,
+            'nodelist':nodelist,
         }
         self.environ = {}
         self.context = {
