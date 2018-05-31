@@ -9,7 +9,6 @@ from CheckFireShell.CFSPackageCommands import *
 from CheckFireShell.CFSConfigCommands import *
 from CheckFireShell.CFSHelp import help
 from CheckFireCore.TestPackage import TestPackage
-from CheckFireCore.bcolors import bcolors
 import re
 
 

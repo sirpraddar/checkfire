@@ -1,4 +1,4 @@
-from .bcolors import bcolors
+from CheckFireShell.bcolors import bcolors
 from .Test import Test
 from .Config import Config
 import base64
@@ -6,13 +6,14 @@ from os import chmod,remove,getcwd
 from pathlib import Path
 import json
 from json import JSONDecodeError
-import subprocess
 
 
 def validatePath(path):
     if not Path(path).is_file():
         raise ValueError
 
+def defCallback(test, retCode, stdout):
+    pass
 
 class TestPackage:
     def __init__(self,path="",name=""):
@@ -23,10 +24,11 @@ class TestPackage:
         self.configs = {}
         self.todo = []
         self.files = {}
+        self.remoteToDo = {}
         self.path = "tests/" + self.name
 
-        self.createdFiles = []
-        self.activeConfigs = []
+        self.__createdFiles = []
+        self.__activeConfigs = []
 
         try:
             if not path == "":
@@ -38,21 +40,26 @@ class TestPackage:
         except ValueError:
             return
 
-    def executeTests(self):
+    def executeLocalTests(self, callback=defCallback):
         wd = getcwd() + "/temp/"
         print("Executing Tests:")
         successes = 0
         fails = 0
         skipped = 0
+        #        successes,fails,skipped
+        report = {
+            "success": 0,
+            "fails": 0,
+            "skipped": 0
+        }
 
 
-        for c in self.activeConfigs:
+        for c in self.__activeConfigs:
             self.expandFiles(self.configs[c].getRequiredFiles())
 
 
         for i in self.todo:
             curTest = self.tests[i]
-            print("{}{:<40}{}".format(bcolors.HEADER,i,bcolors.ENDC), end="")
             #sys.stdout.flush()
             #prepare environment for execution
 
@@ -65,39 +72,36 @@ class TestPackage:
             for c in curTest.configs:
                 self.expandFiles(self.configs[c].getRequiredFiles())
 
-            for c in self.activeConfigs:
+            for c in self.__activeConfigs:
                 if c not in curTest.configs:
                     self.configs[c].deactivate()
-                    self.activeConfigs.remove(c)
+                    self.__activeConfigs.remove(c)
 
             for k in curTest.configs:
-                if k not in self.activeConfigs:
+                if k not in self.__activeConfigs:
                     self.configs[k].activate()
-                    self.activeConfigs.append(k)
+                    self.__activeConfigs.append(k)
 
             result = self.tests[i].execTest()
             if result[0] == 0:
-                print("{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC))
-                successes += 1
+                report["success"] += 1
             elif result[0] == -1:
-                print ("{}[X]{}\n{}".format(bcolors.FAIL,bcolors.ENDC,result[1]))
-                fails += 1
+                report["fails"] += 1
             elif result[0] == -2:
-                print ("{}[S]{}\n{}".format(bcolors.WARNING,bcolors.ENDC,result[1]))
-                skipped += 1
+                report["skipped"] += 1
             else:
-                print ("{}[X]{}\nExit code:{}\n{}".format(bcolors.FAIL,bcolors.ENDC,result[0],result[1]))
-                fails += 1
+                report["fails"] += 1
 
+            callback(self.tests[i], result[0], result[1])
         self.cleanTemp()
-        return (successes,fails,skipped)
+        return report
 
 
     def cleanTemp(self):
-        for i in self.createdFiles:
+        for i in self.__createdFiles:
             try:
                 remove("temp/" + i)
-                self.createdFiles.remove(i)
+                self.__createdFiles.remove(i)
             except FileNotFoundError:
                 pass
 
@@ -110,7 +114,7 @@ class TestPackage:
         with open("temp/" + name, "w") as bergof:
             script = base64.b64decode(self.files[name])
             bergof.write(script.decode("ascii"))
-            self.createdFiles.append(name)
+            self.__createdFiles.append(name)
         chmod("temp/" + name, 0o700)
 
     def loadFromFile(self,path):
@@ -130,6 +134,7 @@ class TestPackage:
         self.todo = testParsed["todo"]
         self.files = testParsed["files"]
         self.name = testParsed["name"]
+        self.remoteToDo = testParsed["remoteToDo"]
         self.path = path
         self.loaded = True
 
@@ -144,6 +149,7 @@ class TestPackage:
             dict["configs"][k] = v.toDict()
         dict["todo"] = self.todo
         dict["files"] = self.files
+        dict["remoteToDo"] = self.remoteToDo
 
         return dict
 

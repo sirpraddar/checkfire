@@ -3,6 +3,7 @@ from .CFSUtils import checkPathExists
 from CheckFireCore.Test import Test
 from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
+from .bcolors import bcolors
 
 #Executes the test suite
 class go(command):
@@ -14,12 +15,25 @@ class go(command):
             self.println("You have to load a package first")
             return 2
 
-        summary = context["package"].executeTests()
+        summary = context["package"].executeLocalTests(self.callback)
         self.println("Tests completed. Summary:")
-        self.println(" {} test passed".format(summary[0]))
-        self.println(" {} test failed".format(summary[1]))
-        self.println(" {} test skipped".format(summary[2]))
+        self.println(" {} test passed".format(summary["success"]))
+        self.println(" {} test failed".format(summary["fails"]))
+        self.println(" {} test skipped".format(summary["skipped"]))
         return 0
+
+    def callback (self, test, exitCode, stdout):
+        print("{}{:<40}{}".format(bcolors.HEADER, test.name, bcolors.ENDC), end="")
+
+        if exitCode == 0:
+            print("{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC))
+        elif exitCode == -1:
+            print("{}[X]{}\n{}".format(bcolors.FAIL, bcolors.ENDC, stdout))
+        elif exitCode == -2:
+            print("{}[S]{}\n{}".format(bcolors.WARNING, bcolors.ENDC, stdout))
+        else:
+            print("{}[X]{}\nExit code:{}\n{}".format(bcolors.FAIL, bcolors.ENDC, exitCode, stdout))
+
 
 
 class newconfig(command):
