@@ -18,8 +18,10 @@ ADMIN_LEVEL = 15
 
 
 def authLevel():
-    token = request.form['token']
-
+    try:
+        token = request.form['token']
+    except KeyError:
+        return NULL_LEVEL
     if token == conf['Security']['AdminToken']:
         return ADMIN_LEVEL
     elif token == conf['Security']['ControlToken']:
@@ -33,19 +35,19 @@ def authLevel():
 @CFNApp.route('/load/<package>', methods=['POST'])
 def load(package):
     if authLevel() != ADMIN_LEVEL:
-        return [403, 'Unsufficient privilege level.']
+        return 'Unsufficient privilege level.', 403
 
     name = package
     jsonData = request.form['data']
     tp = TestPackage(name,json.loads(jsonData))
     tp.saveToFile()
-    return [200, "File Received."]
+    return "File Received.", 200
 
 
 @CFNApp.route('/execute/<package>', methods=['POST'])
 def executelocal(package):
     if authLevel() < CONTROL_LEVEL:
-        return [403, 'Unsufficient privilege level.']
+        return 'Unsufficient privilege level.', 403
     pack = TestPackage('tests/'+package)
     results = pack.executeLocalTests()
     return jsonify(results)
@@ -54,9 +56,12 @@ def executelocal(package):
 @CFNApp.route('/execute', methods=['POST'])
 def execute():
     if authLevel() < CONTROL_LEVEL:
-        return [403, 'Unsufficient privilege level.']
+        return 'Unsufficient privilege level.', 403
 
     jsonData = request.form['data']
-    tp = TestPackage(dict=json.loads(jsonData))
+    dict = json.loads(jsonData)
+    #print (dict)
+    tp = TestPackage(name='temp',dict=dict)
+    #print(str(tp))
     results = tp.executeLocalTests()
     return jsonify(results)

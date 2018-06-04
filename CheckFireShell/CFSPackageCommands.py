@@ -14,7 +14,7 @@ class go(command):
         if not context["package"].loaded:
             self.println("You have to load a package first")
             return 2
-
+        print("Executing Tests:")
         summary = context["package"].executeLocalTests(self.callback)
         self.println("Tests completed. Summary:")
         self.println(" {} test passed".format(summary["brief"]["success"]))

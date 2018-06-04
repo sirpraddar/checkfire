@@ -32,15 +32,17 @@ class TestPackage:
         self.__activeConfigs = []
 
         try:
-            if not path == "" and not dict == {}:
+            if path == "" and dict == {}:
                 raise ValueError
             if not path == "":
                 self.loadFromFile(path)
                 self.loaded = True
                 self.path = path
             elif not dict == {}:
-                self.tests = dict['tests']
-                self.configs = dict['configs']
+                for k,t in dict['tests'].items():
+                    self.tests[k] = Test(t,k)
+                for k,c in dict['configs'].items():
+                    self.configs[k] = Config(k,c)
                 self.todo = dict['todo']
                 self.files = dict['files']
                 self.remoteToDo = dict['remoteToDo']
@@ -52,7 +54,7 @@ class TestPackage:
 
     def executeLocalTests(self, callback=defCallback):
         wd = getcwd() + "/temp/"
-        print("Executing Tests:")
+
         report = {
             "detailed": {},
             "brief": {"success": 0,
