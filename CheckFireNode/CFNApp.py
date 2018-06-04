@@ -1,8 +1,13 @@
 from flask import Flask,request,jsonify
 import json
 from CheckFireCore.TestPackage import TestPackage
-from cfslave import conf
+import configparser
 
+
+conf = configparser.ConfigParser()
+conf.read('node.conf')
+
+tokens = {}
 CFNApp = Flask(__name__)
 
 NULL_LEVEL = 0
@@ -37,7 +42,7 @@ def load(package):
 
 
 @CFNApp.route('/execute/<package>', methods=['POST'])
-def execute(package):
+def executelocal(package):
     if authLevel() < CONTROL_LEVEL:
         return [403, 'Unsufficient privilege level.']
     pack = TestPackage('tests/'+package)
