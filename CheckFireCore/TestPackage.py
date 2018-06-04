@@ -39,7 +39,6 @@ class TestPackage:
                 self.loaded = True
                 self.path = path
             elif not dict == {}:
-                self.name = dict['name']
                 self.tests = dict['tests']
                 self.configs = dict['configs']
                 self.todo = dict['todo']
@@ -55,6 +54,7 @@ class TestPackage:
         wd = getcwd() + "/temp/"
         print("Executing Tests:")
         report = {
+            "details": {},
             "success": 0,
             "fails": 0,
             "skipped": 0
@@ -95,6 +95,7 @@ class TestPackage:
                 report["fails"] += 1
 
             callback(self.tests[i], result[0], result[1])
+            report["details"][i] = (result[0], result[1])
         self.cleanTemp()
         return report
 
