@@ -3,9 +3,10 @@ import json
 from CheckFireCore.TestPackage import TestPackage
 import configparser
 
+CONF_FILE = 'node.conf'
 
 conf = configparser.ConfigParser()
-conf.read('node.conf')
+conf.read(CONF_FILE)
 
 tokens = {}
 CFNApp = Flask(__name__)
