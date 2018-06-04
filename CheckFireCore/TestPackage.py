@@ -54,10 +54,10 @@ class TestPackage:
         wd = getcwd() + "/temp/"
         print("Executing Tests:")
         report = {
-            "details": {},
-            "success": 0,
-            "fails": 0,
-            "skipped": 0
+            "detailed": {},
+            "brief": {"success": 0,
+                      "fails": 0,
+                      "skipped": 0}
         }
 
         for c in self.__activeConfigs:
@@ -86,16 +86,16 @@ class TestPackage:
 
             result = self.tests[i].execTest()
             if result[0] == 0:
-                report["success"] += 1
+                report["brief"]["success"] += 1
             elif result[0] == -1:
-                report["fails"] += 1
+                report["brief"]["fails"] += 1
             elif result[0] == -2:
-                report["skipped"] += 1
+                report["brief"]["skipped"] += 1
             else:
-                report["fails"] += 1
+                report["brief"]["fails"] += 1
 
             callback(self.tests[i], result[0], result[1])
-            report["details"][i] = (result[0], result[1])
+            report["detailed"][i] = (result[0], result[1])
         self.cleanTemp()
         return report
 

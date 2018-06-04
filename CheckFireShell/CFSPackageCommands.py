@@ -17,9 +17,9 @@ class go(command):
 
         summary = context["package"].executeLocalTests(self.callback)
         self.println("Tests completed. Summary:")
-        self.println(" {} test passed".format(summary["success"]))
-        self.println(" {} test failed".format(summary["fails"]))
-        self.println(" {} test skipped".format(summary["skipped"]))
+        self.println(" {} test passed".format(summary["brief"]["success"]))
+        self.println(" {} test failed".format(summary["brief"]["fails"]))
+        self.println(" {} test skipped".format(summary["brief"]["skipped"]))
         return 0
 
     def callback (self, test, exitCode, stdout):
