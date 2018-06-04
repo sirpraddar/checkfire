@@ -18,7 +18,7 @@ def defCallback(test, retCode, stdout):
 
 
 class TestPackage:
-    def __init__(self,path="",name=""):
+    def __init__(self,path="",name="", dict={}):
         self.name = name
         self.loaded = False
         self.tests = {}
@@ -32,10 +32,20 @@ class TestPackage:
         self.__activeConfigs = []
 
         try:
+            if not path == "" and not dict == {}:
+                raise ValueError
             if not path == "":
                 self.loadFromFile(path)
                 self.loaded = True
                 self.path = path
+            elif not dict == {}:
+                self.name = dict['name']
+                self.tests = dict['tests']
+                self.configs = dict['configs']
+                self.todo = dict['todo']
+                self.files = dict['files']
+                self.remoteToDo = dict['remoteToDo']
+                self.loaded = True
             elif name == "":
                 raise ValueError
         except ValueError:
