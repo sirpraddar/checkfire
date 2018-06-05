@@ -6,6 +6,7 @@ from os import chmod,remove,getcwd
 from pathlib import Path
 import json
 from json import JSONDecodeError
+from .Node import Node
 
 
 def validatePath(path):
@@ -52,6 +53,34 @@ class TestPackage:
         except ValueError:
             return
 
+
+    def executeTests(self,callback=defCallback):
+        results = {}
+        if not self.remoteToDo:
+            results['local'] = self.executeLocalTests(callback)
+            results['brief'] = results['local']['brief']
+            return results
+        nodes = []
+
+        for r,l in self.remoteToDo.items():
+            node = Node(r)
+            nodes.append(node)
+            package = TestPackage(name=r)
+            for t in l:
+                package.copyTestFromPackage(self,t+'-'+self.name)
+            node.execPackage(package)
+
+        results['local'] = self.executeLocalTests(callback)
+        results['brief'] = results['local']['brief']
+        for n in nodes:
+            nodeRes = n.getResults()
+            results[n.name] = nodeRes
+            results['brief']['success'] += nodeRes['success']
+            results['brief']['fails'] += nodeRes['fails']
+            results['brief']['skipped'] += nodeRes['skipped']
+        return results
+
+
     def executeLocalTests(self, callback=defCallback):
         wd = getcwd() + "/temp/"
 
@@ -96,7 +125,7 @@ class TestPackage:
             else:
                 report["brief"]["fails"] += 1
 
-            callback(self.tests[i], result[0], result[1])
+            callback(i, result[0], result[1])
             report["detailed"][i] = (result[0], result[1])
         self.cleanTemp()
         return report

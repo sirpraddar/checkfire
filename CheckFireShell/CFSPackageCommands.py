@@ -22,8 +22,8 @@ class go(command):
         self.println(" {} test skipped".format(summary["brief"]["skipped"]))
         return 0
 
-    def callback (self, test, exitCode, stdout):
-        print("{}{:<40}{}".format(bcolors.HEADER, test.name, bcolors.ENDC), end="")
+    def callback (self, testname, exitCode, stdout):
+        print("{}{:<40}{}".format(bcolors.HEADER, testname, bcolors.ENDC), end="")
 
         if exitCode == 0:
             print("{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC))
