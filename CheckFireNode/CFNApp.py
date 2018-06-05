@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request,jsonify,abort
 import json
 from CheckFireCore.TestPackage import TestPackage
 import configparser
@@ -19,7 +19,7 @@ ADMIN_LEVEL = 15
 
 def authLevel():
     try:
-        token = request.form['token']
+        token = request.json['token']
     except KeyError:
         return NULL_LEVEL
     if token == conf['Security']['AdminToken']:
@@ -32,20 +32,28 @@ def authLevel():
         return NULL_LEVEL
 
 
+def checkJson():
+    try:
+        request.json
+    except TypeError:
+        abort(400,"Malformed request, please use application/json format.")
+
 @CFNApp.route('/load/<package>', methods=['POST'])
 def load(package):
+    checkJson()
     if authLevel() != ADMIN_LEVEL:
         return 'Unsufficient privilege level.', 403
 
     name = package
-    jsonData = request.form['data']
-    tp = TestPackage(name,json.loads(jsonData))
+    jsonData = request.json['data']
+    tp = TestPackage(name,jsonData)
     tp.saveToFile()
     return "File Received.", 200
 
 
 @CFNApp.route('/execute/<package>', methods=['POST'])
 def executelocal(package):
+    checkJson()
     if authLevel() < CONTROL_LEVEL:
         return 'Unsufficient privilege level.', 403
     pack = TestPackage('tests/'+package)
@@ -55,11 +63,12 @@ def executelocal(package):
 
 @CFNApp.route('/execute', methods=['POST'])
 def execute():
+    checkJson()
     if authLevel() < CONTROL_LEVEL:
         return 'Unsufficient privilege level.', 403
 
-    jsonData = request.form['data']
-    dict = json.loads(jsonData)
+    dict = request.json['data']
+    #dict = json.loads(jsonData)
     #print (dict)
     tp = TestPackage(name='temp',dict=dict)
     #print(str(tp))
