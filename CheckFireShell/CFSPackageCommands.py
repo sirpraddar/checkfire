@@ -1,5 +1,5 @@
 from .CFSCommands import command
-from .CFSUtils import checkPathExists
+from .CFSUtils import checkPathExists, getConfig
 from CheckFireCore.Test import Test
 from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
@@ -15,7 +15,7 @@ class go(command):
             self.println("You have to load a package first")
             return 2
         print("Executing Tests:")
-        summary = context["package"].executeLocalTests(self.callback)
+        summary = context["package"].executeTests(self.callback)
         self.println("Tests completed. Summary:")
         self.println(" {} test passed".format(summary["brief"]["success"]))
         self.println(" {} test failed".format(summary["brief"]["fails"]))
@@ -248,21 +248,39 @@ class testlist (command):
 
     def execute(self, args, environ, context):
         if len(args) > 4 or len(args) <= 2 :
-            self.println("Usage: testlist add|remove|move [<TestName>] [<Position>]")
+            self.println("Usage: testlist [<NodeName>] add|remove|move [<TestName>] [<Position>]")
             return 1
 
-        command = args[1]
+        cmds = ('add','remove','move')
+        namepos = 0
+        node = ""
+        command = ""
         name = ""
         pos = -1
 
-        todo = context["package"].todo
+        if args[1] not in cmds and args[1] not in environ['config']:
+            self.println("Node not configured. Please configure it in conf file first")
+            return 2
+        elif args[1] not in cmds:
+            todo = context["package"].remoteToDo[args[1]]
+            command = args[2]
+            namepos = 3
+        else:
+            todo = context["package"].todo
+            command = args[1]
+            namepos = 2
 
-        if type(args[2]) is int:
-            pos = int (args[2])
-        elif type(args[2]) is str:
-            name = args[2]
-            if len(args) == 4:
-                pos = int(args[3])
+        if command not in cmds:
+            self.println("Command invalid, please use add, remove or move")
+            return 1
+
+
+        if type(args[namepos]) is int:
+            pos = int (args[namepos])
+        elif type(args[namepos]) is str:
+            name = args[namepos]
+            if len(args) == namepos + 2:
+                pos = int(args[namepos + 1])
 
         if command == "add":
             if name not in context["package"].tests:

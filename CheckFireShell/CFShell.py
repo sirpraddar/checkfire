@@ -10,7 +10,9 @@ from CheckFireShell.CFSConfigCommands import *
 from CheckFireShell.CFSHelp import help
 from CheckFireCore.TestPackage import TestPackage
 import re
+import configparser
 
+CONF_PATH = 'master.conf'
 
 class CFShell:
     def __init__(self):
@@ -43,10 +45,14 @@ class CFShell:
             'tconfig':tconfig,
             'nodelist':nodelist,
         }
-        self.environ = {}
-        self.context = {
-            "package":TestPackage()
+        self.environ = {
+            "config": configparser.ConfigParser(),
         }
+        self.context = {
+            "package": TestPackage()
+        }
+
+        self.environ['config'].read(CONF_PATH)
 
         self.sorted = contextSorter(self.switch)
 
