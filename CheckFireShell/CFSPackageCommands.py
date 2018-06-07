@@ -1,5 +1,5 @@
 from .CFSCommands import command
-from .CFSUtils import checkPathExists, getConfig
+from .CFSUtils import checkPathExists
 from CheckFireCore.Test import Test
 from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
