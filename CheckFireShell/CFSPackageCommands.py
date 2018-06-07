@@ -14,25 +14,38 @@ class go(command):
         if not context["package"].loaded:
             self.println("You have to load a package first")
             return 2
-        print("Executing Tests:")
+        print(bcolors.colorString(bcolors.colorString("Executing Tests:",bcolors.CYAN),bcolors.BOLD))
+        print(bcolors.colorString("LOCAL TESTS:",bcolors.BOLD))
         summary = context["package"].executeTests(self.callback)
-        self.println("Tests completed. Summary:")
+
+        for n,r in summary.items():
+            if n == 'brief' or n == 'local':
+                continue
+            self.println(bcolors.colorString("{} REMOTE TESTS:".format(n),bcolors.BOLD))
+            for tn, tr in r['detailed'].items():
+                self.callback(tn,tr[0],tr[1],useSelf=True)
+
+        self.println(bcolors.colorString("Tests completed. Summary:", bcolors.BOLD))
         self.println(" {} test passed".format(summary["brief"]["success"]))
         self.println(" {} test failed".format(summary["brief"]["fails"]))
         self.println(" {} test skipped".format(summary["brief"]["skipped"]))
         return 0
 
-    def callback (self, testname, exitCode, stdout):
-        print("{}{:<40}{}".format(bcolors.HEADER, testname, bcolors.ENDC), end="")
-
-        if exitCode == 0:
-            print("{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC))
-        elif exitCode == -1:
-            print("{}[X]{}\n{}".format(bcolors.FAIL, bcolors.ENDC, stdout))
-        elif exitCode == -2:
-            print("{}[S]{}\n{}".format(bcolors.WARNING, bcolors.ENDC, stdout))
+    def callback (self, testname, exitCode, stdout, useSelf = False):
+        if not useSelf:
+            print_r = print
+            print("{}{:<40}{}".format(bcolors.HEADER, testname, bcolors.ENDC), end="")
         else:
-            print("{}[X]{}\nExit code:{}\n{}".format(bcolors.FAIL, bcolors.ENDC, exitCode, stdout))
+            print_r = self.println
+            self.print("{}{:<40}{}".format(bcolors.HEADER, testname, bcolors.ENDC))
+        if exitCode == 0:
+            print_r("{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC))
+        elif exitCode == -1:
+            print_r("{}[X]{}\n{}".format(bcolors.FAIL, bcolors.ENDC, stdout))
+        elif exitCode == -2:
+            print_r("{}[S]{}\n{}".format(bcolors.WARNING, bcolors.ENDC, stdout))
+        else:
+            print_r("{}[X]{}\nExit code:{}\n{}".format(bcolors.FAIL, bcolors.ENDC, exitCode, stdout))
 
 
 class newconfig(command):

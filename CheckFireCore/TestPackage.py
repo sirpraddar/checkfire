@@ -65,21 +65,23 @@ class TestPackage:
         for r,l in self.remoteToDo.items():
             node = Node(r)
             nodes.append(node)
-            package = TestPackage(name=r)
+            package = TestPackage(name=self.name)
             for t in l:
-                package.copyTestFromPackage(self,t+'-'+self.name)
+                package.copyTestFromPackage(self,t)
+                package.todo.append(t)
             node.execPackage(package)
 
         results['local'] = self.executeLocalTests(callback)
         results['brief'] = results['local']['brief']
         for n in nodes:
-            nodeRes = n.getResults()
+            while n.results is None:
+                pass
+            nodeRes = n.results
             results[n.name] = nodeRes
-            results['brief']['success'] += nodeRes['success']
-            results['brief']['fails'] += nodeRes['fails']
-            results['brief']['skipped'] += nodeRes['skipped']
+            results['brief']['success'] += nodeRes['brief']['success']
+            results['brief']['fails'] += nodeRes['brief']['fails']
+            results['brief']['skipped'] += nodeRes['brief']['skipped']
         return results
-
 
     def executeLocalTests(self, callback=defCallback):
         wd = getcwd() + "/temp/"
