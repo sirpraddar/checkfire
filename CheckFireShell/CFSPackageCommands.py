@@ -262,7 +262,10 @@ class testlist (command):
             self.println("Node not configured. Please configure it in conf file first")
             return 2
         elif args[1] not in cmds:
-            todo = context["package"].remoteToDo[args[1]]
+            try:
+                todo = context["package"].remoteToDo[args[1]]
+            except KeyError:
+                todo = context["package"].remoteToDo[args[1]] = []
             command = args[2]
             namepos = 3
         else:
