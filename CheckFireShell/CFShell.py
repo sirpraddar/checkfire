@@ -131,7 +131,10 @@ class CFShell:
                 print ("ERROR: Command not recognized or not supported yet.")
                 continue
             #execute command if valid
-            returnValues = self.switch[arguments[0]]().launch(arguments, self.environ, self.context)
+            try:
+                returnValues = self.switch[arguments[0]]().launch(arguments, self.environ, self.context)
+            except KeyboardInterrupt:
+                print ("Keyboard interrupted")
             if returnValues[0] == 0:
                 print ("{}".format(returnValues[1]), end="")
             elif returnValues[0] == 1:
