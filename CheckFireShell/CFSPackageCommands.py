@@ -265,9 +265,6 @@ class testlist (command):
             return 1
 
         cmds = ('add','remove','move')
-        namepos = 0
-        node = ""
-        command = ""
         name = ""
         pos = -1
 
@@ -308,7 +305,7 @@ class testlist (command):
             else:
                 todo.append(name)
         elif command == "remove":
-            if name not in context["package"].todo:
+            if name not in todo:
                 self.println("Test not in ToDo list")
                 return 2
             todo.remove(name)
