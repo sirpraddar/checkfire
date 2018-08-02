@@ -38,7 +38,7 @@ class Test:
             text += " {} ".format(i)
         text +="\n"
         if self.negate:
-            text += "NEGATE active\n"
+            text += "NEGATE ACTIVE\n"
 
         return text
 

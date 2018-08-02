@@ -78,9 +78,10 @@ class TestPackage:
                 pass
             nodeRes = n.results
             results[n.name] = nodeRes
-            results['brief']['success'] += nodeRes['brief']['success']
-            results['brief']['fails'] += nodeRes['brief']['fails']
-            results['brief']['skipped'] += nodeRes['brief']['skipped']
+            if nodeRes['error'] == 0:
+                results['brief']['success'] += nodeRes['brief']['success']
+                results['brief']['fails'] += nodeRes['brief']['fails']
+                results['brief']['skipped'] += nodeRes['brief']['skipped']
         return results
 
     def executeLocalTests(self, callback=defCallback):
@@ -90,7 +91,8 @@ class TestPackage:
             "detailed": {},
             "brief": {"success": 0,
                       "fails": 0,
-                      "skipped": 0}
+                      "skipped": 0},
+            "error": 0
         }
 
         for c in self.__activeConfigs:

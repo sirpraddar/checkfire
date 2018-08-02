@@ -5,6 +5,8 @@ from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
 from .bcolors import bcolors
 
+import json
+
 #Executes the test suite
 class go(command):
     def getContextSpace(self):
@@ -18,14 +20,27 @@ class go(command):
         print(bcolors.colorString("LOCAL TESTS:",bcolors.BOLD))
         summary = context["package"].executeTests(self.callback)
 
+        error = False
+
         for n,r in summary.items():
             if n == 'brief' or n == 'local':
                 continue
             self.println(bcolors.colorString("{} REMOTE TESTS:".format(n),bcolors.BOLD))
-            for tn, tr in r['detailed'].items():
-                self.callback(tn,tr[0],tr[1],useSelf=True)
+            if r['error'] != 0:
+                self.println(bcolors.colorString(bcolors.colorString("ERROR CONNECTING TO {}".format(n),bcolors.RED),bcolors.BOLD))
+                error = True
+            else:
+                for tn, tr in r['detailed'].items():
+                    self.callback(tn,tr[0],tr[1],useSelf=True)
 
-        self.println(bcolors.colorString("Tests completed. Summary:", bcolors.BOLD))
+        self.println("-----------------------------------------------------")
+
+        if error:
+            self.println(bcolors.colorString("There was errors doing tests.",bcolors.BOLD,bcolors.RED))
+            self.println(bcolors.colorString("Those tests will not be counted.",bcolors.RED))
+        else:
+            self.println(bcolors.colorString("Tests completed. Summary:", bcolors.BOLD))
+
         self.println(" {} test passed".format(summary["brief"]["success"]))
         self.println(" {} test failed".format(summary["brief"]["fails"]))
         self.println(" {} test skipped".format(summary["brief"]["skipped"]))
