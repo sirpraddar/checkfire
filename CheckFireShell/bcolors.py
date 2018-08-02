@@ -13,5 +13,11 @@ class bcolors:
     FRAMED = '\033[51m'
     ENCIRCLED = '\033[52m'
 
-    def colorString (text, color):
+    def colorString (text, colors = []):
+        res = ""
+        for c in colors:
+            res = res + c
+        return res + text + bcolors.RESET
+
+    def colorString (text,color):
         return color + text + bcolors.RESET
