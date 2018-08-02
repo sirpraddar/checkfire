@@ -1,3 +1,6 @@
+import collections
+
+
 class bcolors:
     MAGENTA = HEADER = '\033[95m'
     BLUE = OKBLUE = '\033[94m'
@@ -13,11 +16,8 @@ class bcolors:
     FRAMED = '\033[51m'
     ENCIRCLED = '\033[52m'
 
-    def colorString (text, colors = []):
+    def colorString (text, *args):
         res = ""
-        for c in colors:
+        for c in args:
             res = res + c
         return res + text + bcolors.RESET
-
-    def colorString (text,color):
-        return color + text + bcolors.RESET
