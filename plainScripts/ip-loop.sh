@@ -22,29 +22,25 @@ if [ -z ${TEST+x} ]; then
     exit 1
 fi
 
-if [ -z ${IPNAME+x} ]; then
-    echo "Missing IPNAME parameter"
-    exit 1
-fi
-
 if [ -z ${IFACE+x} ]; then
     IFACE=$(ls /sys/class/net/ | grep -v 'lo\|tun' | head - -n 1)
 fi
 
 SUCCESS=0;
 BACKUP=$(ip -4 address show $IFACE | grep -o -m 1 -E "([0-9]+\.){3}[0-9]+" | head -n1)
+DEFGW=$(ip route show | grep default | grep -o -E "([0-9]+\.){3}[0-9]+")
 
 for i in $(eval echo $RANGE); do
 
   if [ $(id -u) -eq 0 ]; then
     ip address flush dev $IFACE;
     ip address add $i/$NETMASK dev $IFACE;
+    ip route add default via $DEFGW
   else
     sudo ip address flush dev $IFACE;
     sudo ip address add $i/$NETMASK dev $IFACE;
+    sudo ip route add default via $DEFGW
   fi
-
-  export "${IPNAME}"="$i";
 
   RESULT=$(./$TEST)
   EXITCODE=$?
@@ -59,9 +55,11 @@ done
 if [ $(id -u) -eq 0 ]; then
     ip address flush dev $IFACE;
     ip address add $BACKUP/$NETMASK dev $IFACE;
+    ip route add default via $DEFGW
 else
     sudo ip address flush dev $IFACE;
     sudo ip address add $BACKUP/$NETMASK dev $IFACE;
+    sudo ip route add default via $DEFGW
 fi
 
 exit $SUCCESS
