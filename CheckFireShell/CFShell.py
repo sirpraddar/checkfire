@@ -44,6 +44,7 @@ class CFShell:
             'cparam':cparam,
             'tconfig':tconfig,
             'nodelist':nodelist,
+            'tfiles': tfiles,
         }
         self.environ = {
             "config": configparser.ConfigParser(),
