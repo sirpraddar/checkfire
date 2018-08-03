@@ -82,7 +82,8 @@ class tfiles(command):
 
     def execute(self, args, environ, context):
         if len(args) !=3:
-            self.println("Usage: tfiles add|delete <FileName>")
+            self.println("Usage: tfiles add|remove <FileName>")
+            return 1
 
         command = args[1]
         file = args[2]
@@ -94,12 +95,12 @@ class tfiles(command):
             if file not in context["package"].files:
                 self.println("Specified file not in package, you must import it first.")
                 return 2
-            context["test"].required.append(file)
+            context["test"].require.append(file)
             self.println("File successfully added.")
             return 0
-        elif command == "delete":
-            if file in context["test"].required:
-                context["test"].remove(file)
+        elif command == "remove":
+            if file in context["test"].require:
+                context["test"].require.remove(file)
                 self.println("File successfully removed")
                 return 0
         else:
