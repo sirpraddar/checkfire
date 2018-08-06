@@ -150,6 +150,7 @@ class load(command):
             return 2
 
         context["package"].loadFromFile(path)
+        return 0
 
 
 class save(command):
