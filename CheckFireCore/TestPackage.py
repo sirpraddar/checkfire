@@ -45,8 +45,8 @@ class TestPackage:
                 for k,c in dict['configs'].items():
                     self.configs[k] = Config(k,c)
                 self.todo = copy.deepcopy(dict['todo'])
-                self.files = copy.deepcopy(['files'])
-                self.remoteToDo = copy.deepcopy(['remoteToDo'])
+                self.files = copy.deepcopy(dict['files'])
+                self.remoteToDo = copy.deepcopy(dict['remoteToDo'])
                 self.loaded = True
             elif name == "":
                 raise ValueError
