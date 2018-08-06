@@ -1,6 +1,6 @@
 from os import environ as ShellEnviron, getcwd
 import subprocess
-
+import copy
 
 class Test:
     def __init__(self, dictLoaded={}, name=''):
@@ -14,12 +14,12 @@ class Test:
 
         if dictLoaded != {}:
             #self.name = name
-            self.description = dictLoaded["description"]
-            self.script = dictLoaded["script"]
-            self.configs = dictLoaded["configs"]
-            self.require = dictLoaded["require"]
-            self.tparams = dictLoaded["tparams"]
-            self.negate = dictLoaded["negate"]
+            self.description = copy.deepcopy(dictLoaded["description"])
+            self.script = copy.deepcopy(dictLoaded["script"])
+            self.configs = copy.deepcopy(dictLoaded["configs"])
+            self.require = copy.deepcopy(dictLoaded["require"])
+            self.tparams = copy.deepcopy(dictLoaded["tparams"])
+            self.negate = copy.deepcopy(dictLoaded["negate"])
 
     def __str__(self):
         text = ""
@@ -45,13 +45,13 @@ class Test:
 
     def toDict(self):
         dict = {}
-        dict["name"] = self.name
-        dict["description"] = self.description
-        dict["script"] = self.script
-        dict["configs"] = self.configs
-        dict["require"] = self.require
-        dict["tparams"] = self.tparams
-        dict["negate"] = self.negate
+        dict["name"] = copy.deepcopy(self.name)
+        dict["description"] = copy.deepcopy(self.description)
+        dict["script"] = copy.deepcopy(self.script)
+        dict["configs"] = copy.deepcopy(self.configs)
+        dict["require"] = copy.deepcopy(self.require)
+        dict["tparams"] = copy.deepcopy(self.tparams)
+        dict["negate"] = copy.deepcopy(self.negate)
 
         return dict
 

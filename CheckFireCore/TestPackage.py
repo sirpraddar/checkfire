@@ -7,7 +7,7 @@ from pathlib import Path
 import json
 from json import JSONDecodeError
 from .Node import Node
-
+import copy
 
 def validatePath(path):
     if not Path(path).is_file():
@@ -44,9 +44,9 @@ class TestPackage:
                     self.tests[k] = Test(t,k)
                 for k,c in dict['configs'].items():
                     self.configs[k] = Config(k,c)
-                self.todo = dict['todo']
-                self.files = dict['files']
-                self.remoteToDo = dict['remoteToDo']
+                self.todo = copy.deepcopy(dict['todo'])
+                self.files = copy.deepcopy(['files'])
+                self.remoteToDo = copy.deepcopy(['remoteToDo'])
                 self.loaded = True
             elif name == "":
                 raise ValueError
@@ -175,16 +175,16 @@ class TestPackage:
 
     def toDict(self):
         dict = {}
-        dict["name"] = self.name
+        dict["name"] = copy.deepcopy(self.name)
         dict["tests"] = {}
         dict["configs"] = {}
         for k,v in self.tests.items():
             dict["tests"][k] = v.toDict()
         for k,v in self.configs.items():
             dict["configs"][k] = v.toDict()
-        dict["todo"] = self.todo
-        dict["files"] = self.files
-        dict["remoteToDo"] = self.remoteToDo
+        dict["todo"] = copy.deepcopy(self.todo)
+        dict["files"] = copy.deepcopy(self.files)
+        dict["remoteToDo"] = copy.deepcopy(self.remoteToDo)
 
         return dict
 
