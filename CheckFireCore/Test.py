@@ -76,6 +76,6 @@ class Test:
                 ShellEnviron.pop(k)
 
         if self.negate:
-            result.returncode = 0 if result.returncode != 0 else 0
+            result.returncode = 127 if result.returncode == 0 else 0
 
         return (result.returncode, result.stdout.decode("ascii"))
