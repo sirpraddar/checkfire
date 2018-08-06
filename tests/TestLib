@@ -96,7 +96,7 @@
    },
    "todo": [],
    "files": {
-      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",
+      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCmlmIFsgLXogJHtUSU1FT1VUK3h9IF07IHRoZW4gVElNRU9VVD0xOyBmaQoKcGluZyAtYyAkQ09VTlQgLVcgJFRJTUVPVVQgJERFU1RJUAo=",
       "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
       "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk=",
       "http-wget.sh": "IyEvYmluL2Jhc2gKCndnZXQgLXFPLSAkVVJMICY+L2Rldi9udWxsCg==",
