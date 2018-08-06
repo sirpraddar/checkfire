@@ -1,5 +1,5 @@
 from .CFSCommands import command
-from .CFSUtils import checkPathExists
+from .CFSUtils import checkPathExists, checkPureName
 from CheckFireCore.Test import Test
 from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
@@ -406,4 +406,34 @@ class newpackage(command):
         newpack.saveToFile()
         context["package"] = newpack
 
+        return 0
+
+
+class clonepackage(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE | self.CONTEXT_GLOBAL
+
+    def execute(self, args, environ, context):
+        if not ((len(args) == 3) or (len(args) == 2 and context['package'].loaded)):
+            self.println("Usage: clonepackage <NewPackage> <SourcePackage>")
+            self.println("          clonepackage <NewPackage> (if source is opened)")
+            return 1
+
+        if not checkPureName(args[1]):
+            self.println("NewPackage cannot use special characters.")
+            return 2
+
+        if len(args) == 2:
+            newp = TestPackage(dict=context['package'].toDict(), name=args[1])
+        elif len(args) == 3:
+            if not checkPathExists("tests/" + args[2]):
+                self.println("Source package not found.")
+                return 2
+
+            newp = TestPackage(name=args[1])
+            newp.loadFromFile("tests/" + args[2])
+            newp.rename(args[1])
+
+        newp.saveToFile()
+        self.println("Clone complete.")
         return 0

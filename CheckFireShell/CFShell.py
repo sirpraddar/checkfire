@@ -22,6 +22,7 @@ class CFShell:
             #'list': list,
             'load': load,
             'newpackage': newpackage,
+            'clonepackage': clonepackage,
             'use': use,
             'info': info,
             'select': select,
