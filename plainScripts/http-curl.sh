@@ -1,3 +1,3 @@
 #!/bin/bash
 
-curl $URL &>/dev/null
+curl -m 1 $URL &>/dev/null
