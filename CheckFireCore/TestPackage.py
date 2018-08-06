@@ -290,3 +290,7 @@ class TestPackage:
         name = Path(path).name
         textb64 = base64.b64encode(open(path,"rb").read())
         self.files[name] = textb64.decode("ascii")
+
+    def rename(self,newname):
+        self.name = newname
+        self.path = "tests/" + newname
