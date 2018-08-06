@@ -30,6 +30,10 @@ class command ():
     def getContextSpace(self):
         raise NotImplementedError("You are not supposed to use this class directly.")
 
+    def keyboardInterrupted(self):
+        self.println("Keyboard Interrupted")
+        return (1,self.stdout)
+
 
 #Commands regarding Tests
 class select (command):
