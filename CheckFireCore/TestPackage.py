@@ -273,11 +273,11 @@ class TestPackage:
 
         text += bcolors.colorString("\nTest List:\n",bcolors.BOLD)
         for j,i in self.tests.items():
-            text += "   {}: {}\n".format(j,i.description)
+            text += "   {} : {}\n".format(j,i.description)
 
         text += bcolors.colorString("\nConfig List:\n",bcolors.BOLD)
         for j,i in self.configs.items():
-            text += "   {}: {}\n".format(j, i.description)
+            text += "   {} : {}\n".format(j, i.description)
 
         text += bcolors.colorString("\nIncluded files:\n",bcolors.BOLD)
         for j,i in self.files.items():
