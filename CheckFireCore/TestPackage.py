@@ -8,10 +8,8 @@ import json
 from json import JSONDecodeError
 from .Node import Node
 import copy
+from .CoreUtils import validatePath
 
-def validatePath(path):
-    if not Path(path).is_file():
-        raise ValueError
 
 
 def defCallback(test, retCode, stdout):
