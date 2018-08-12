@@ -16,10 +16,13 @@ class Node:
         self.__address = conf[name]['Address']
         self.results = None
 
+    def __URIgen(self,command):
+        return 'http://' + self.__address + ':' + self.__port + '/' + command
+
     def execPackage (self,package):
         payload = {'token': self.__token,
                    'data': package.toDict()}
-        uri = 'http://' + self.__address + ':' + self.__port + '/execute'
+        uri = self.__URIgen('execute')
         req = _AsyncRequest(uri,payload,self.callback)
         req.start()
 
@@ -29,6 +32,16 @@ class Node:
     def loadPackage (self,package):
         pass
 
+    def __power(self, command):
+        payload = {'token': self.__token}
+        uri = self.__URIgen('power/' + command)
+        req = _AsyncRequest(uri,payload,defCallback)
+
+    def shutdown(self):
+        self.__power('shutdown')
+
+    def reboot(self):
+        self.__power('reboot')
 
 
 def defCallback(req):
@@ -63,5 +76,6 @@ class _AsyncRequest(Thread):
                 "brief": {},
                 "error": -2
             }
+            self.returnCode = -2
         self.done = True
         self.__callback(self)

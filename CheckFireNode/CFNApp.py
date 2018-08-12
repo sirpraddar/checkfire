@@ -2,6 +2,7 @@ from flask import Flask,request,jsonify,abort
 import json
 from CheckFireCore.TestPackage import TestPackage
 import configparser
+from .CFNPower import *
 
 CONF_FILE = 'node.conf'
 
