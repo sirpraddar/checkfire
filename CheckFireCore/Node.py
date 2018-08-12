@@ -32,16 +32,22 @@ class Node:
     def loadPackage (self,package):
         pass
 
-    def __power(self, command):
+    def __generalRequest(self,command):
         payload = {'token': self.__token}
-        uri = self.__URIgen('power/' + command)
-        req = _AsyncRequest(uri,payload,defCallback)
+        uri = self.__URIgen('command')
+        req = _AsyncRequest(uri, payload, defCallback)
+
+    def __power(self, command):
+        self.__generalRequest('power/' + command)
 
     def shutdown(self):
         self.__power('shutdown')
 
     def reboot(self):
         self.__power('reboot')
+
+    def update(self):
+        self.__generalRequest('/admin/update')
 
 
 def defCallback(req):
@@ -68,6 +74,11 @@ def rebootAllNodes():
     nodes = loadNodesFromConfig()
     for n in nodes:
         n.reboot()
+
+def updateAllNodes():
+    nodes = loadNodesFromConfig()
+    for n in nodes:
+        n.update()
 
 
 class _AsyncRequest(Thread):

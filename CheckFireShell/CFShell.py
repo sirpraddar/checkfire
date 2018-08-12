@@ -48,6 +48,7 @@ class CFShell:
             'nodelist':nodelist,
             'tfiles': tfiles,
             'nodespower': nodespower,
+            'updatenodes': updatenodes,
         }
         self.environ = {
             "config": configparser.ConfigParser(),
