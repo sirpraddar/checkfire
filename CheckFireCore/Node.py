@@ -48,6 +48,28 @@ def defCallback(req):
     pass
 
 
+def loadNodesFromConfig():
+        nodes = []
+        conf = configparser.ConfigParser()
+        conf.read('master.conf')
+        for name,configs in conf.items():
+            nodes.append(Node(name,configs))
+
+        return nodes
+
+
+def shutdownAllNodes():
+    nodes = loadNodesFromConfig()
+    for n in nodes:
+        n.shutdown()
+
+
+def rebootAllNodes():
+    nodes = loadNodesFromConfig()
+    for n in nodes:
+        n.reboot()
+
+
 class _AsyncRequest(Thread):
     def __init__(self,uri,data,callback=defCallback):
         Thread.__init__(self)

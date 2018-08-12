@@ -7,6 +7,7 @@ from CheckFireShell.CFSCommands import *
 from CheckFireShell.CFSTestCommands import *
 from CheckFireShell.CFSPackageCommands import *
 from CheckFireShell.CFSConfigCommands import *
+from CheckFireShell.CFSNodes import *
 from CheckFireShell.CFSHelp import help
 from CheckFireCore.TestPackage import TestPackage
 import re
@@ -46,6 +47,7 @@ class CFShell:
             'tconfig':tconfig,
             'nodelist':nodelist,
             'tfiles': tfiles,
+            'nodespower': nodespower,
         }
         self.environ = {
             "config": configparser.ConfigParser(),
