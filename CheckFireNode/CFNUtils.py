@@ -1,4 +1,4 @@
-from flask import request
+from flask import request,abort
 import configparser
 
 CONF_FILE = 'node.conf'
