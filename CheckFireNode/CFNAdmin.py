@@ -1,10 +1,13 @@
-from .CFNApp import CFNApp, checkJson, authLevel, ADMIN_LEVEL
+from .CFNApp import checkJson, authLevel, ADMIN_LEVEL
 from subprocess import run, Popen
 from .CFNPower import _REBOOT
+from flask import Blueprint
 
 _UPDATECMD = "git pull"
+mod_admin = Blueprint('admin',__name__)
 
-@CFNApp.route('/admin/update')
+
+@mod_admin.route('/admin/update',methods=["POST"])
 def update():
     checkJson()
     if authLevel() != ADMIN_LEVEL:

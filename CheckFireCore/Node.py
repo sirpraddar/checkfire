@@ -34,8 +34,9 @@ class Node:
 
     def __generalRequest(self,command):
         payload = {'token': self.__token}
-        uri = self.__URIgen('command')
+        uri = self.__URIgen(command)
         req = _AsyncRequest(uri, payload, defCallback)
+        req.start()
 
     def __power(self, command):
         self.__generalRequest('power/' + command)

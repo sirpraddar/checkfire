@@ -1,26 +1,31 @@
-from .CFNApp import CFNApp, checkJson, authLevel, ADMIN_LEVEL
-from subprocess import Popen
+#from subprocess import Popen
+from os import system
+from .CFNApp import checkJson, authLevel, ADMIN_LEVEL
+from flask import Blueprint
+import json
 
-_POWER_OFF="sleep 1; /usr/bin/poweroff"
-_REBOOT="sleep 1; /usr/bin/reboot"
+_POWER_OFF="/usr/bin/sleep 1; /usr/bin/poweroff"
+_REBOOT="/usr/bin/sleep 1; /usr/bin/reboot"
 
-@CFNApp.route('/power/shutdown')
+mod_power = Blueprint('power',__name__)
+
+@mod_power.route('/power/shutdown', methods=["POST"])
 def shutdown():
     checkJson()
     if authLevel() != ADMIN_LEVEL:
         return {'message': 'Insufficient privilege level.', 'error': 403}, 403
 
-    Popen([_POWER_OFF])
+    system(_POWER_OFF)
 
-    return {'error': 0}, 200
+    return json.dumps({'error': 0}), 200
 
 
-@CFNApp.route('/power/reboot')
+@mod_power.route('/power/reboot',methods=["POST"])
 def reboot():
     checkJson()
     if authLevel() != ADMIN_LEVEL:
         return {'message': 'Insufficient privilege level.', 'error': 403}, 403
 
-    Popen([_REBOOT])
+    system(_REBOOT)
 
-    return {'error': 0}, 200
+    return json.dumps({'error': 0}), 200

@@ -1,43 +1,16 @@
 from flask import Flask,request,jsonify,abort
 import json
 from CheckFireCore.TestPackage import TestPackage
+from .CFNUtils import *
 import configparser
-from .CFNPower import *
 
-CONF_FILE = 'node.conf'
-
-conf = configparser.ConfigParser()
-conf.read(CONF_FILE)
+from .CFNPower import mod_power
+from .CFNAdmin import mod_admin
 
 tokens = {}
 CFNApp = Flask(__name__)
-
-NULL_LEVEL = 0
-INFO_LEVEL = 1
-CONTROL_LEVEL = 2
-ADMIN_LEVEL = 15
-
-
-def authLevel():
-    try:
-        token = request.json['token']
-    except KeyError:
-        return NULL_LEVEL
-    if token == conf['Security']['AdminToken']:
-        return ADMIN_LEVEL
-    elif token == conf['Security']['ControlToken']:
-        return CONTROL_LEVEL
-    elif token == conf['Security']['InfoToken']:
-        return INFO_LEVEL
-    else:
-        return NULL_LEVEL
-
-
-def checkJson():
-    try:
-        request.json
-    except TypeError:
-        abort(400,"Malformed request, please use application/json format.")
+CFNApp.register_blueprint(mod_power)
+CFNApp.register_blueprint(mod_admin)
 
 @CFNApp.route('/load/<package>', methods=['POST'])
 def load(package):
