@@ -59,7 +59,7 @@ def loadNodesFromConfig():
         conf = configparser.ConfigParser()
         conf.read('master.conf')
         for name,configs in conf.items():
-            nodes.append(Node(name,configs))
+            nodes.append(Node(name,conf))
 
         return nodes
 
