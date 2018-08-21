@@ -89,7 +89,7 @@ class CFShell:
         return tokens
 
     #main loop of CLI
-    def cmdloop(self):
+    def cmdloop(self, stdin=""):
         history = InMemoryHistory()
         returnValues = (0, "")
         while returnValues[0] >= 0:
@@ -136,21 +136,24 @@ class CFShell:
                 print ("ERROR: Command not recognized or not supported yet.")
                 continue
             #execute command if valid
-            command = self.switch[arguments[0]]()
-            try:
-                returnValues = command.launch(arguments, self.environ, self.context)
-            except KeyboardInterrupt:
-                returnValues= command.keyboardInterrupted()
-            finally:
-                if returnValues[0] == 0:
-                    print ("{}".format(returnValues[1]), end="")
-                elif returnValues[0] == 1:
-                    print("{}) {}".format(returnValues[0], returnValues[1]), end="")
-                elif returnValues[0] == 2:
-                    print("{})ERROR: {}".format(returnValues[0], returnValues[1]), end="")
-
+            self.executeCommand(arguments)
 
         print("Bye.")
+
+    def executeCommand(self, arguments):
+        command = self.switch[arguments[0]]()
+        try:
+            returnValues = command.launch(arguments, self.environ, self.context)
+        except KeyboardInterrupt:
+            returnValues = command.keyboardInterrupted()
+        finally:
+            if returnValues[0] == 0:
+                print("{}".format(returnValues[1]), end="")
+            elif returnValues[0] == 1:
+                print("{}) {}".format(returnValues[0], returnValues[1]), end="")
+            elif returnValues[0] == 2:
+                print("{})ERROR: {}".format(returnValues[0], returnValues[1]), end="")
+            return returnValues
 
     def getCompleter(self):
         if "test" in self.context:
