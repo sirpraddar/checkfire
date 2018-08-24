@@ -9,7 +9,7 @@ from json import JSONDecodeError
 from .Node import Node
 import copy
 from .CoreUtils import validatePath
-
+from .GlobalSettings import *
 
 
 def defCallback(test, retCode, stdout):
@@ -25,7 +25,7 @@ class TestPackage:
         self.todo = []
         self.files = {}
         self.remoteToDo = {}
-        self.path = "tests/" + self.name
+        self.path = PACKAGE_PATH + self.name
 
         self.__createdFiles = []
         self.__activeConfigs = []
@@ -135,7 +135,7 @@ class TestPackage:
     def cleanTemp(self):
         for i in self.__createdFiles:
             try:
-                remove("temp/" + i)
+                remove(TEMP_PATH + i)
                 self.__createdFiles.remove(i)
             except FileNotFoundError:
                 pass
@@ -145,11 +145,11 @@ class TestPackage:
             self.expandFile(i)
 
     def expandFile (self, name):
-        with open("temp/" + name, "w") as bergof:
+        with open(TEMP_PATH + name, "w") as bergof:
             script = base64.b64decode(self.files[name])
             bergof.write(script.decode("ascii"))
             self.__createdFiles.append(name)
-        chmod("temp/" + name, 0o700)
+        chmod(TEMP_PATH + name, 0o700)
 
     def loadFromFile(self,path):
         validatePath(path)
@@ -291,4 +291,4 @@ class TestPackage:
 
     def rename(self,newname):
         self.name = newname
-        self.path = "tests/" + newname
+        self.path = PACKAGE_PATH + newname

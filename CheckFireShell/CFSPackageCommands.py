@@ -4,7 +4,7 @@ from CheckFireCore.Test import Test
 from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
 from .bcolors import bcolors
-
+from CheckFireCore.GlobalSettings import *
 import json
 
 #Executes the test suite
@@ -104,7 +104,7 @@ class newconfig(command):
             return 0
 
         elif command == "package":
-            source = TestPackage("tests/"+enableScript,enableScript)
+            source = TestPackage(PACKAGE_PATH+enableScript,enableScript)
             if enableScript in context["package"].configs:
                 if not input("Configuration already present, do you want to overwrite? (y/n)").upper() == "Y":
                     self.println("Aborted")
@@ -152,7 +152,7 @@ class newtest (command):
             return 0
 
         elif command == "package":
-            source = TestPackage("tests/"+script,script)
+            source = TestPackage(PACKAGE_PATH+script,script)
             if name in context["package"].tests:
                 if not input("Test already present, do you want to overwrite? (y/n)").upper() == "Y":
                     self.println("Aborted")
@@ -426,12 +426,12 @@ class clonepackage(command):
         if len(args) == 2:
             newp = TestPackage(dict=context['package'].toDict(), name=args[1])
         elif len(args) == 3:
-            if not checkPathExists("tests/" + args[2]):
+            if not checkPathExists(PACKAGE_PATH + args[2]):
                 self.println("Source package not found.")
                 return 2
 
             newp = TestPackage(name=args[1])
-            newp.loadFromFile("tests/" + args[2])
+            newp.loadFromFile(PACKAGE_PATH + args[2])
             newp.rename(args[1])
 
         newp.saveToFile()

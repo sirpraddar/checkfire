@@ -1,5 +1,6 @@
 import collections
 from .CFSUtils import checkPathExists
+from CheckFireCore.GlobalSettings import *
 
 #Handles Shell stuff
 class command ():
@@ -94,7 +95,7 @@ class use(command):
         if len(args) != 2:
             self.println("Usage: use <PackageName>")
             return 1
-        path = "tests/"+args[1]
+        path = PACKAGE_PATH+args[1]
         if checkPathExists(path):
             from CheckFireCore.TestPackage import  TestPackage
             context["package"] = TestPackage()
@@ -167,7 +168,7 @@ class save(command):
             return 2
         try:
             if len(args) == 2:
-                path = "tests/" + args[1]
+                path = PACKAGE_PATH + args[1]
                 context["package"].saveToFile(path)
             else:
                 context["package"].saveToFile()

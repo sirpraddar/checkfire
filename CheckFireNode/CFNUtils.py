@@ -8,7 +8,7 @@ CONTROL_LEVEL = 2
 ADMIN_LEVEL = 15
 
 conf = configparser.ConfigParser()
-conf.read(CONF_FILE)
+conf.read(NODE_CONF_PATH)
 
 def authLevel():
     try:
