@@ -57,7 +57,7 @@ class CFShell:
             "package": TestPackage()
         }
 
-        self.environ['config'].read(CONF_PATH)
+        self.environ['config'].read(MASTER_CONF_PATH)
 
         self.sorted = contextSorter(self.switch)
 

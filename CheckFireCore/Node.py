@@ -10,7 +10,7 @@ class Node:
         self.name = name
         if not configs:
             conf = configparser.ConfigParser()
-            conf.read(CONF_PATH)
+            conf.read(NODE_CONF_PATH)
         else:
             conf = configs
         self.__token = conf[name]['Token']
@@ -60,7 +60,7 @@ def defCallback(req):
 def loadNodesFromConfig():
         nodes = []
         conf = configparser.ConfigParser()
-        conf.read(CONF_PATH)
+        conf.read(NODE_CONF_PATH)
         for name in conf.sections():
             nodes.append(Node(name,conf))
 

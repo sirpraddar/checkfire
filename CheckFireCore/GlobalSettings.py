@@ -1,2 +1,2 @@
-CONF_PATH = 'configs/master.conf'
-CONF_FILE = 'configs/node.conf'
+MASTER_CONF_PATH = 'configs/master.conf'
+NODE_CONF_PATH = 'configs/node.conf'
