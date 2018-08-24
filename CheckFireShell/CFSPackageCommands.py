@@ -1,8 +1,11 @@
 from .CFSCommands import command
-from .CFSUtils import checkPathExists
+from .CFSUtils import checkPathExists, checkPureName
 from CheckFireCore.Test import Test
 from CheckFireCore.TestPackage import TestPackage
 from .CFSCommands import importfile
+from .bcolors import bcolors
+
+import json
 
 #Executes the test suite
 class go(command):
@@ -13,13 +16,51 @@ class go(command):
         if not context["package"].loaded:
             self.println("You have to load a package first")
             return 2
+        print(bcolors.colorString(bcolors.colorString("Executing Tests:",bcolors.CYAN),bcolors.BOLD))
+        print(bcolors.colorString("LOCAL TESTS:",bcolors.BOLD))
+        summary = context["package"].executeTests(self.callback)
 
-        summary = context["package"].executeTests()
-        self.println("Tests completed. Summary:")
-        self.println(" {} test passed".format(summary[0]))
-        self.println(" {} test failed".format(summary[1]))
-        self.println(" {} test skipped".format(summary[2]))
+        error = False
+
+        for n,r in summary.items():
+            if n == 'brief' or n == 'local':
+                continue
+            self.println(bcolors.colorString("{} REMOTE TESTS:".format(n),bcolors.BOLD))
+            if r['error'] != 0:
+                self.println(bcolors.colorString(bcolors.colorString("ERROR CONNECTING TO {}".format(n),bcolors.RED),bcolors.BOLD))
+                error = True
+            else:
+                for tn, tr in r['detailed'].items():
+                    self.callback(tn,tr[0],tr[1],useSelf=True)
+
+        self.println("-----------------------------------------------------")
+
+        if error:
+            self.println(bcolors.colorString("There was errors doing tests.",bcolors.BOLD,bcolors.RED))
+            self.println(bcolors.colorString("Those tests will not be counted.",bcolors.RED))
+        else:
+            self.println(bcolors.colorString("Tests completed. Summary:", bcolors.BOLD))
+
+        self.println(" {} test passed".format(summary["brief"]["success"]))
+        self.println(" {} test failed".format(summary["brief"]["fails"]))
+        self.println(" {} test skipped".format(summary["brief"]["skipped"]))
         return 0
+
+    def callback (self, testname, exitCode, stdout, useSelf = False):
+        if not useSelf:
+            print_r = print
+            print("{}{:<40}{}".format(bcolors.HEADER, testname, bcolors.ENDC), end="")
+        else:
+            print_r = self.println
+            self.print("{}{:<40}{}".format(bcolors.HEADER, testname, bcolors.ENDC))
+        if exitCode == 0:
+            print_r("{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC))
+        elif exitCode == -1:
+            print_r("{}[X]{}\n{}".format(bcolors.FAIL, bcolors.ENDC, stdout))
+        elif exitCode == -2:
+            print_r("{}[S]{}\n{}".format(bcolors.WARNING, bcolors.ENDC, stdout))
+        else:
+            print_r("{}[X]{}\nExit code:{}\n{}".format(bcolors.FAIL, bcolors.ENDC, exitCode, stdout))
 
 
 class newconfig(command):
@@ -235,21 +276,91 @@ class testlist (command):
 
     def execute(self, args, environ, context):
         if len(args) > 4 or len(args) <= 2 :
-            self.println("Usage: testlist add|remove|move [<TestName>] [<Position>]")
+            self.println("Usage: testlist [<NodeName>] add|remove|move [<TestName>] [<Position>]")
             return 1
 
-        command = args[1]
+        cmds = ('add','remove','move')
         name = ""
         pos = -1
 
-        todo = context["package"].todo
+        if args[1] not in cmds and args[1] not in environ['config']:
+            self.println("Node not configured. Please configure it in conf file first")
+            return 2
+        elif args[1] not in cmds:
+            try:
+                todo = context["package"].remoteToDo[args[1]]
+            except KeyError:
+                todo = context["package"].remoteToDo[args[1]] = []
+            command = args[2]
+            namepos = 3
+        else:
+            todo = context["package"].todo
+            command = args[1]
+            namepos = 2
 
-        if type(args[2]) is int:
-            pos = int (args[2])
-        elif type(args[2]) is str:
-            name = args[2]
-            if len(args) == 4:
-                pos = int(args[3])
+        if command not in cmds:
+            self.println("Command invalid, please use add, remove or move")
+            return 1
+
+
+        if type(args[namepos]) is int:
+            pos = int (args[namepos])
+        elif type(args[namepos]) is str:
+            name = args[namepos]
+            if len(args) == namepos + 2:
+                pos = int(args[namepos + 1])
+
+        if command == "add":
+            if name not in context["package"].tests:
+                self.println("Test not in package.")
+                return 2
+
+            if pos >= 0 and pos < len(todo):
+                todo.insert(pos,name)
+            else:
+                todo.append(name)
+        elif command == "remove":
+            if name not in todo:
+                self.println("Test not in ToDo list")
+                return 2
+            todo.remove(name)
+        elif command == "move":
+            if name not in todo or pos < 0 or pos > len(todo):
+                self.println("Test not in todo list or position not valid.")
+                return 2
+            todo.remove(name)
+            todo.insert(pos,name)
+
+        return 0
+
+
+class nodelist (command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE
+
+    def execute(self, args, environ, context):
+        if len(args) > 5 or len(args) <= 2 :
+            self.println("Usage: nodelist <Node> add|move|remove|delete [<TestName>] [<Position>]")
+            return 1
+
+        remote = args[1]
+        command = args[2]
+        name = ""
+        pos = -1
+
+        if remote in context["package"].remoteToDo:
+            todo = context["package"].remoteToDo[remote]
+        elif command == "add":
+            todo = []
+            context["package"].remoteToDo[remote] = todo
+
+        if len(args) > 3:
+            if type(args[3]) is int:
+                pos = int (args[3])
+            elif type(args[3]) is str:
+                name = args[3]
+                if len(args) == 5:
+                    pos = int(args[4])
 
         if command == "add":
             if name not in context["package"].tests:
@@ -262,16 +373,22 @@ class testlist (command):
                 todo.append(name)
         elif command == "remove":
             if name not in context["package"].todo:
-                self.println("Test not in ToDo list")
+                self.println("Test not in this ToDo list")
                 return 2
             todo.remove(name)
+            if not todo:
+                context["package"].remoteToDo.pop(remote)
         elif command == "move":
             if name not in todo or pos < 0 or pos > len(todo):
                 self.println("Test not in todo list or position not valid.")
                 return 2
             todo.remove(name)
             todo.insert(pos,name)
-
+        elif command == "delete":
+            if remote not in context["package"].remoteToDo:
+                self.println("Non existant ToDo list.")
+                return 2
+            context["package"].remoteToDo.pop(remote)
         return 0
 
 
@@ -292,3 +409,31 @@ class newpackage(command):
         return 0
 
 
+class clonepackage(command):
+    def getContextSpace(self):
+        return self.CONTEXT_PACKAGE | self.CONTEXT_GLOBAL
+
+    def execute(self, args, environ, context):
+        if not ((len(args) == 3) or (len(args) == 2 and context['package'].loaded)):
+            self.println("Usage: clonepackage <NewPackage> <SourcePackage>")
+            self.println("          clonepackage <NewPackage> (if source is opened)")
+            return 1
+
+        if not checkPureName(args[1]):
+            self.println("NewPackage cannot use special characters.")
+            return 2
+
+        if len(args) == 2:
+            newp = TestPackage(dict=context['package'].toDict(), name=args[1])
+        elif len(args) == 3:
+            if not checkPathExists("tests/" + args[2]):
+                self.println("Source package not found.")
+                return 2
+
+            newp = TestPackage(name=args[1])
+            newp.loadFromFile("tests/" + args[2])
+            newp.rename(args[1])
+
+        newp.saveToFile()
+        self.println("Clone complete.")
+        return 0

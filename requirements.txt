@@ -1,1 +1,4 @@
 prompt-toolkit==1.0.15
+pygments==2.2.0
+flask==1.0.2
+requests==2.18.4

@@ -1,6 +1,6 @@
 from os import getcwd, environ as ShellEnviron
 import subprocess
-
+import copy
 
 class Config:
     def __init__(self, name, dict = {}):
@@ -13,22 +13,22 @@ class Config:
         self.cparams = {}
 
         if dict != {}:
-            self.escript = dict["escript"]
-            self.dscript = dict["dscript"]
-            self.require = dict["require"]
-            self.description = dict["description"]
-            self.rparams = dict["rparams"]
-            self.cparams = dict["cparams"]
+            self.escript = copy.deepcopy(dict["escript"])
+            self.dscript = copy.deepcopy(dict["dscript"])
+            self.require = copy.deepcopy(dict["require"])
+            self.description = copy.deepcopy(dict["description"])
+            self.rparams = copy.deepcopy(dict["rparams"])
+            self.cparams = copy.deepcopy(dict["cparams"])
 
     def toDict(self):
         dict = {}
-        dict["name"] = self.name
-        dict["escript"] = self.escript
-        dict["dscript"] = self.dscript
-        dict["require"] = self.require
-        dict["description"] = self.description
-        dict["rparams"] = self.rparams
-        dict["cparams"] = self.cparams
+        dict["name"] = copy.deepcopy(self.name)
+        dict["escript"] = copy.deepcopy(self.escript)
+        dict["dscript"] = copy.deepcopy(self.dscript)
+        dict["require"] = copy.deepcopy(self.require)
+        dict["description"] = copy.deepcopy(self.description)
+        dict["rparams"] = copy.deepcopy(self.rparams)
+        dict["cparams"] = copy.deepcopy(self.cparams)
 
         return dict
 

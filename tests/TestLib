@@ -54,6 +54,31 @@
             "URL": "http://www.parrocchiadimaranello.com"
          },
          "negate": false
+      },
+      "IpLoopGeneric": {
+         "name": "IpLoopGeneric",
+         "description": "This test performs another test but looping with prefixed ip range. Ip range must be provided in bash format (supports bash expansion). Before using this skeleton remember to require the subtest file and to set all general parameters required by the script to work.",
+         "script": "ip-loop.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {
+            "RANGE": "",
+            "NETMASK": "",
+            "TEST": "",
+            "IFACE": ""
+         },
+         "negate": false
+      },
+      "curl": {
+         "name": "curl",
+         "description": "Make a get request using curl.",
+         "script": "http-curl.sh",
+         "configs": [],
+         "require": [],
+         "tparams": {
+            "URL": "http://2.53.144.1/"
+         },
+         "negate": false
       }
    },
    "configs": {
@@ -71,9 +96,12 @@
    },
    "todo": [],
    "files": {
-      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCnBpbmcgLWMgJENPVU5UICRERVNUSVAK",
+      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCmlmIFsgLXogJHtUSU1FT1VUK3h9IF07IHRoZW4gVElNRU9VVD0xOyBmaQoKcGluZyAtYyAkQ09VTlQgLVcgJFRJTUVPVVQgJERFU1RJUAo=",
       "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
       "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk=",
-      "http-wget.sh": "IyEvYmluL2Jhc2gKCndnZXQgLXFPLSAkVVJMICY+L2Rldi9udWxsCg=="
-   }
+      "http-wget.sh": "IyEvYmluL2Jhc2gKCndnZXQgLXFPLSAkVVJMICY+L2Rldi9udWxsCg==",
+      "ip-loop.sh": "IyEvdXNyL2Jpbi9lbnYgYmFzaAoKI1ZhcmlhYmxlczoKIyAgUkFOR0U6ICAgU3BlY2lmeSBJUHMgdG8gbG9vcCBmb3IgaW4gYmFzaCBmb3JtCiMgIE5FVE1BU0s6IFN1Ym5ldCBtYXNrCiMgIFRFU1Q6ICAgIFRlc3QgdG8gZXhlY3V0ZSBmb3IgZWFjaCBpcAojICBJRkFDRTogICBOZXR3b3JrIGludGVyZmFjZSB0byBjaGFuZ2UKIyAgSVBOQU1FOiAgVmFyaWFibGUgbmFtZSBmb3IgdGhlIGlwcyBpbiB0aGUgc3Vic2NyaXB0CgppZiBbIC16ICR7UkFOR0UreH0gXTsgdGhlbgogICAgZWNobyAiTWlzc2luZyBSQU5HRSBwYXJhbWV0ZXIiCiAgICBleGl0IDEKZmkKCmlmIFsgLXogJHtORVRNQVNLK3h9IF07IHRoZW4KICAgIGVjaG8gIk1pc3NpbmcgTkVUTUFTSyBwYXJhbWV0ZXIiCiAgICBleGl0IDEKZmkKCmlmIFsgLXogJHtURVNUK3h9IF07IHRoZW4KICAgIGVjaG8gIk1pc3NpbmcgVEVTVCBwYXJhbWV0ZXIiCiAgICBleGl0IDEKZmkKCmlmIFsgLXogJHtJRkFDRSt4fSBdOyB0aGVuCiAgICBJRkFDRT0kKGxzIC9zeXMvY2xhc3MvbmV0LyB8IGdyZXAgLXYgJ2xvXHx0dW4nIHwgaGVhZCAtIC1uIDEpCmZpCgpTVUNDRVNTPTA7CkJBQ0tVUD0kKGlwIC00IGFkZHJlc3Mgc2hvdyAkSUZBQ0UgfCBncmVwIC1vIC1tIDEgLUUgIihbMC05XStcLil7M31bMC05XSsiIHwgaGVhZCAtbjEpCkRFRkdXPSQoaXAgcm91dGUgc2hvdyB8IGdyZXAgZGVmYXVsdCB8IGdyZXAgLW8gLUUgIihbMC05XStcLil7M31bMC05XSsiKQoKZm9yIGkgaW4gJChldmFsIGVjaG8gJFJBTkdFKTsgZG8KCiAgaWYgWyAkKGlkIC11KSAtZXEgMCBdOyB0aGVuCiAgICBpcCBhZGRyZXNzIGZsdXNoIGRldiAkSUZBQ0U7CiAgICBpcCBhZGRyZXNzIGFkZCAkaS8kTkVUTUFTSyBkZXYgJElGQUNFOwogICAgaXAgcm91dGUgYWRkIGRlZmF1bHQgdmlhICRERUZHVwogIGVsc2UKICAgIHN1ZG8gaXAgYWRkcmVzcyBmbHVzaCBkZXYgJElGQUNFOwogICAgc3VkbyBpcCBhZGRyZXNzIGFkZCAkaS8kTkVUTUFTSyBkZXYgJElGQUNFOwogICAgc3VkbyBpcCByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgJERFRkdXCiAgZmkKCiAgUkVTVUxUPSQoLi8kVEVTVCkKICBFWElUQ09ERT0kPwogIGlmIFsgJEVYSVRDT0RFIC1uZSAwIF07IHRoZW4KICAgIGVjaG8gIlRlc3QgZmFpbGVkIGZvciAkaToiCiAgICBlY2hvICRSRVNVTFQKICAgIGVjaG8gIi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSIKICAgIFNVQ0NFU1M9JChleHByICRTVUNDRVNTICsgJEVYSVRDT0RFKQogIGZpCmRvbmUKCmlmIFsgJChpZCAtdSkgLWVxIDAgXTsgdGhlbgogICAgaXAgYWRkcmVzcyBmbHVzaCBkZXYgJElGQUNFOwogICAgaXAgYWRkcmVzcyBhZGQgJEJBQ0tVUC8kTkVUTUFTSyBkZXYgJElGQUNFOwogICAgaXAgcm91dGUgYWRkIGRlZmF1bHQgdmlhICRERUZHVwplbHNlCiAgICBzdWRvIGlwIGFkZHJlc3MgZmx1c2ggZGV2ICRJRkFDRTsKICAgIHN1ZG8gaXAgYWRkcmVzcyBhZGQgJEJBQ0tVUC8kTkVUTUFTSyBkZXYgJElGQUNFOwogICAgc3VkbyBpcCByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgJERFRkdXCmZpCgpleGl0ICRTVUNDRVNT",
+      "http-curl.sh": "IyEvYmluL2Jhc2gKCmN1cmwgLW0gMSAkVVJMICY+L2Rldi9udWxsCg=="
+   },
+   "remoteToDo": {}
 }

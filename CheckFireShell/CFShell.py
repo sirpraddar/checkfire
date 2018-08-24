@@ -7,11 +7,13 @@ from CheckFireShell.CFSCommands import *
 from CheckFireShell.CFSTestCommands import *
 from CheckFireShell.CFSPackageCommands import *
 from CheckFireShell.CFSConfigCommands import *
+from CheckFireShell.CFSNodes import *
 from CheckFireShell.CFSHelp import help
 from CheckFireCore.TestPackage import TestPackage
-from CheckFireCore.bcolors import bcolors
 import re
+import configparser
 
+CONF_PATH = 'master.conf'
 
 class CFShell:
     def __init__(self):
@@ -21,6 +23,7 @@ class CFShell:
             #'list': list,
             'load': load,
             'newpackage': newpackage,
+            'clonepackage': clonepackage,
             'use': use,
             'info': info,
             'select': select,
@@ -42,11 +45,19 @@ class CFShell:
             'rparam':rparam,
             'cparam':cparam,
             'tconfig':tconfig,
+            'nodelist':nodelist,
+            'tfiles': tfiles,
+            'nodespower': nodespower,
+            'updatenodes': updatenodes,
         }
-        self.environ = {}
+        self.environ = {
+            "config": configparser.ConfigParser(),
+        }
         self.context = {
-            "package":TestPackage()
+            "package": TestPackage()
         }
+
+        self.environ['config'].read(CONF_PATH)
 
         self.sorted = contextSorter(self.switch)
 
@@ -78,7 +89,7 @@ class CFShell:
         return tokens
 
     #main loop of CLI
-    def cmdloop(self):
+    def cmdloop(self, stdin=""):
         history = InMemoryHistory()
         returnValues = (0, "")
         while returnValues[0] >= 0:
@@ -125,15 +136,24 @@ class CFShell:
                 print ("ERROR: Command not recognized or not supported yet.")
                 continue
             #execute command if valid
-            returnValues = self.switch[arguments[0]]().launch(arguments, self.environ, self.context)
+            self.executeCommand(arguments)
+
+        print("Bye.")
+
+    def executeCommand(self, arguments):
+        command = self.switch[arguments[0]]()
+        try:
+            returnValues = command.launch(arguments, self.environ, self.context)
+        except KeyboardInterrupt:
+            returnValues = command.keyboardInterrupted()
+        finally:
             if returnValues[0] == 0:
-                print ("{}".format(returnValues[1]), end="")
+                print("{}".format(returnValues[1]), end="")
             elif returnValues[0] == 1:
                 print("{}) {}".format(returnValues[0], returnValues[1]), end="")
             elif returnValues[0] == 2:
                 print("{})ERROR: {}".format(returnValues[0], returnValues[1]), end="")
-
-        print("Bye.")
+            return returnValues
 
     def getCompleter(self):
         if "test" in self.context:

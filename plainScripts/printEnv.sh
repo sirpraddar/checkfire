@@ -1,3 +1,3 @@
 #!/bin/bash
 
-env > /tmp/cfenv
+set > /tmp/cfenv
