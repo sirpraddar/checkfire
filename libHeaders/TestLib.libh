@@ -1,0 +1,6 @@
+[DEFAULT]
+libraryPackage = TestLib
+
+[ping]
+phrase = ping {DESTIP} [try {COUNT} times]
+test=ping

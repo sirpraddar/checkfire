@@ -2,13 +2,15 @@ import requests
 from threading import Thread
 import configparser
 from requests import ConnectionError,HTTPError
+from .GlobalSettings import *
+
 
 class Node:
     def __init__(self, name, configs=None):
         self.name = name
         if not configs:
             conf = configparser.ConfigParser()
-            conf.read('master.conf')
+            conf.read(CONF_PATH)
         else:
             conf = configs
         self.__token = conf[name]['Token']
@@ -58,7 +60,7 @@ def defCallback(req):
 def loadNodesFromConfig():
         nodes = []
         conf = configparser.ConfigParser()
-        conf.read('master.conf')
+        conf.read(CONF_PATH)
         for name in conf.sections():
             nodes.append(Node(name,conf))
 

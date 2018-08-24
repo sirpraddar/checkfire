@@ -1,7 +1,6 @@
 from flask import request,abort
 import configparser
-
-CONF_FILE = 'node.conf'
+from CheckFireCore.GlobalSettings import *
 
 NULL_LEVEL = 0
 INFO_LEVEL = 1

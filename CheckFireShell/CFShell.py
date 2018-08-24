@@ -12,8 +12,8 @@ from CheckFireShell.CFSHelp import help
 from CheckFireCore.TestPackage import TestPackage
 import re
 import configparser
+from CheckFireCore.GlobalSettings import *
 
-CONF_PATH = 'master.conf'
 
 class CFShell:
     def __init__(self):
