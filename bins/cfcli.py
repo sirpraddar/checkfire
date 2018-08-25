@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from CheckFireShell.CFShell import CFShell
 import argparse
 
