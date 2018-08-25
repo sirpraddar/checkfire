@@ -151,7 +151,9 @@ class TestPackage:
             self.__createdFiles.append(name)
         chmod(TEMP_PATH + name, 0o700)
 
-    def loadFromFile(self,path):
+    def loadFromFile(self,path=""):
+        if path == "":
+            path = self.path
         validatePath(path)
 
         file = open (path,'r')
