@@ -10,32 +10,54 @@ class PolicyParser():
         self.lib.loadFromFile()
 
         for key,entries in libH.items():
-            if not key == "DEFAULT":
+            if not key == "LIBH":
                 self.testMap[key] = TestParser(key,self.lib,entries)
 
     def parseNetwork(self,network):
-        policies = network['Policies'].split()
+        policies = network['Policies'].keys()
         retPack = TestPackage(name=network['NETWORK']['name'])
-
+        count = 1
         for phrase in policies:
-            test = self.__getTestFromPhrase(phrase)
-            test.parsePhrase(phrase)
+            negate = False
+            testparser = self.__getTestFromPhrase(phrase)
+            phrasecut = re.sub("[A-Za-z0-9\.\,\-]* ?can (not )?", "", phrase)
+            tokens = phrase.split()
+
+            if testparser.test not in retPack.tests:
+                retPack.copyTestFromPackage(self.lib,testparser.test.name)
+            test = testparser.parsePhrase(phrasecut)
+
+            test.name = str(count) + "-" + phrasecut.split()[0]
+            test.description = phrase
+            if tokens[2] == "not":
+                test.negate = True
+
+            #todo: substitute network placeholders with real addresses
+            #todo: Assign test to the right worker node
+
             retPack.tests[test.name] = test
 
+            count += 1
         return retPack
 
 
     def __getTestFromPhrase(self,phrase):
         phrasecut = re.sub("[A-Za-z0-9\.\,\-]* ?can (not )?","",phrase)
+        #phrasecut = phrasecut.split()
         name = ""
         test = None
+
         for word in phrasecut:
+            #name = name + " " + word
             name = name + word
+
             try:
                 test = self.testMap[name]
-            except ValueError:
+                break
+            except KeyError:
                 pass
-
+        if test == None:
+            raise KeyError
         return test
 
 
@@ -45,15 +67,25 @@ class TestParser():
             self.test = None
             self.phrase = None
             self.parser = None
+            self.constparams = None
         else:
             self.test = testLib.tests[entries['test']]
             self.phrase = entries['phrase']
-            self.parser = PhraseParser(self.phrase)
+            try:
+                self.constparams = {}
+                for p in entries['params'].split():
+                    pT = p.split("=")
+                    self.constparams[pT[0]] = pT[1]
+            except:
+                pass
+            self.parser = PhraseParser.buildParserTree(self.phrase)
         self.name = name
 
     def parsePhrase(self,phrase):
         params = self.parser.parsePhrase(phrase)
-        mytest = Test(self.test.toDict())
+        mytest = Test(dictLoaded=self.test.toDict())
+        if self.constparams:
+            params.update(self.constparams)
         mytest.tparams = params
         return mytest
 
@@ -76,11 +108,12 @@ class PhraseParser():
         tokens = self.phrase.split()
         self.words = []
         for t in tokens:
-            if re.match("\{\w+\}", t):  # parameter token word found
+            if re.match("\{[A-Za-z0-9\.\:\/]+\}", t):  # parameter token word found
                 self.words.append((self.WORD_PARAM, t[1:-1]))
             elif re.match("\w+", t):
                 self.words.append((self.WORD_LANGUAGE, t))
             else:
+                print("Token error: "+t)
                 raise ValueError
 
     def parsePhrase(self, phrase):

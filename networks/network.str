@@ -21,10 +21,10 @@ Host=SRVPRA=192.168.5.4
      SRVQUEL=192.168.5.200
 
 [Policies]
-LAN can ping DMZ:
-DMZ can not ping LAN try 5 times:
-192.168.0.1-10,30 can surf the net:
-LAN can send emails:
-LAN can connect to SRVMAIL tcp 25:
-SRVMAIL can connect to WAN on tcp port 25:
-Proxy can surf the net:
+LAN can ping DMZ;
+DMZ can not ping LAN try 5 times;
+192.168.0.1-10,30 can navigate to http://google.it;
+#LAN can send emails;
+#LAN can connect to SRVMAIL tcp 25;
+#SRVMAIL can connect to WAN on tcp port 25;
+Proxy can surf the net;

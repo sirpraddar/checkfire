@@ -5,6 +5,15 @@ LibraryPackage = TestLib
 phrase = ping {DESTIP} [try {COUNT} times]
 test=ping
 
-[connect to]
-phrase = connect to {WHO} on {PROTO} port {PORT}
-test=connect
+#[connect to]
+#phrase = connect to {WHO} on {PROTO} port {PORT}
+#test=connect
+
+[navigate]
+phrase = navigate to {URL}
+test=curl
+
+[surf the net]
+phrase = surf the net
+params = URL=http://google.it
+test = curl
