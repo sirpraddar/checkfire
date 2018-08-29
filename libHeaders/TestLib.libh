@@ -1,6 +1,10 @@
-[DEFAULT]
-libraryPackage = TestLib
+[LIBH]
+LibraryPackage = TestLib
 
 [ping]
 phrase = ping {DESTIP} [try {COUNT} times]
 test=ping
+
+[connect to]
+phrase = connect to {WHO} on {PROTO} port {PORT}
+test=connect

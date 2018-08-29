@@ -1,6 +1,5 @@
-[DEFAULT]
+[NETWORK]
 name = reteprova
-
 
 [Net:LAN]
 Address=192.168.0.0/24
@@ -23,8 +22,9 @@ Host=SRVPRA=192.168.5.4
 
 [Policies]
 LAN can ping DMZ:
+DMZ can not ping LAN try 5 times:
 192.168.0.1-10,30 can surf the net:
-can send emails:
-can connect to SRVMAIL tcp 25:
+LAN can send emails:
+LAN can connect to SRVMAIL tcp 25:
 SRVMAIL can connect to WAN on tcp port 25:
 Proxy can surf the net:

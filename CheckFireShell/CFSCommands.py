@@ -97,7 +97,7 @@ class use(command):
             return 1
         path = PACKAGE_PATH+args[1]
         if checkPathExists(path):
-            from CheckFireCore.TestPackage import  TestPackage
+            from CheckFireCore.TestPackage import TestPackage
             context["package"] = TestPackage()
             context["package"].loadFromFile(path)
             return 0
