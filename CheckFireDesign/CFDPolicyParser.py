@@ -40,6 +40,8 @@ class PolicyParser():
                 except:
                     pass
 
+            test.iploop = networkResolver.getNetworkRangeAddresses(tokens[0])
+
             #todo: Assign test to the right worker node
             try:
                 retPack.remoteToDo[networkResolver.getWorkerNode(tokens[0])].append(test.name)
