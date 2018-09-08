@@ -9,4 +9,5 @@ def validatePath(path):
 
 def execShellCommand(cmd):
     proc = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
-    return str(proc.stdout.read()), proc.returncode
+    output = proc.stdout.read().decode('utf-8')
+    return output.strip('\n'), proc.returncode
