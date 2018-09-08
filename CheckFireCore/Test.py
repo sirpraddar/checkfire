@@ -1,6 +1,8 @@
 from os import environ as ShellEnviron, getcwd
 import subprocess
 import copy
+import ipaddress
+from .CoreUtils import execShellCommand
 
 class Test:
     def __init__(self, dictLoaded={}, name=''):
@@ -11,6 +13,7 @@ class Test:
         self.require = []
         self.tparams = {}
         self.negate = False
+        self.iploop = None
 
         if dictLoaded != {}:
             #self.name = name
@@ -20,6 +23,10 @@ class Test:
             self.require = copy.deepcopy(dictLoaded["require"])
             self.tparams = copy.deepcopy(dictLoaded["tparams"])
             self.negate = copy.deepcopy(dictLoaded["negate"])
+            try:
+                self.iploop = copy.deepcopy(dictLoaded["iploop"])
+            except KeyError:
+                pass
 
     def __str__(self):
         text = ""
@@ -37,6 +44,8 @@ class Test:
         for i in self.require:
             text += " {} ".format(i)
         text +="\n"
+        if self.iploop:
+            text += "LOOP FROM {} TO {}\n".format(self.iploop[0],self.iploop[1])
         if self.negate:
             text += "NEGATE ACTIVE\n"
 
@@ -52,6 +61,7 @@ class Test:
         dict["require"] = copy.deepcopy(self.require)
         dict["tparams"] = copy.deepcopy(self.tparams)
         dict["negate"] = copy.deepcopy(self.negate)
+        dict["iploop"] = copy.deepcopy(self.iploop)
 
         return dict
 
@@ -62,6 +72,47 @@ class Test:
         return files
 
     def execTest(self):
+        if self.iploop:
+            return self.__execLoopTest()
+        else:
+            return self.__execTest()
+
+    def __execLoopTest(self):
+        out ,  _ = execShellCommand('ip -4 address show iface | grep -o -m 1 -E "([0-9]+\.){3}[0-9]{1,3}\/?[1-9]?[0-9]?" | head -n1')
+        out = out.split('/')
+        backupIp = out[0]
+        netmask = out[1]
+        iface , _ = execShellCommand('ip link show | grep -o -E "2: [a-z0-9]+" | grep -o -E "[a-z].[a-z0-9]+"')
+        backupDefaultGW, _ = execShellCommand('ip route show | grep default | grep -o -E "([0-9]+\.){3}[0-9]+"')
+        iplow = ipaddress.ip_address(self.iploop[0])
+        iphigh = ipaddress.ip_address(self.iploop[1])
+        finalResult = 0
+        finalText = ""
+
+        while iplow <= iphigh:
+            execShellCommand('ip address flush dev {}'.format(iface))
+            execShellCommand('ip address add {}/{} dev {}'.format(iplow,netmask,iface))
+            execShellCommand('ip route add default via {}'.format(backupDefaultGW))
+
+            errCode, result = self.__execTest()
+
+            #execShellCommand('ip address delete {}/{} dev {}'.format(iplow, netmask, iface))
+
+            if not errCode == 0:
+                finalText += "Test failed for {}\n".format(iplow)
+                finalText += result + "\n"
+                finalText += '-------------------------------------------------------\n'
+
+            finalResult += errCode
+            iplow += 1
+
+        execShellCommand('ip address flush dev {}'.format(iface))
+        execShellCommand('ip address add {}/{} dev {}'.format(backupIp,netmask,iface))
+        execShellCommand('ip route add default via {}'.format(backupDefaultGW))
+
+        return finalResult, finalText
+
+    def __execTest(self):
         wd = getcwd() + "/temp/"
 
 
