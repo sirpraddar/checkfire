@@ -118,7 +118,7 @@ class PhraseParser():
         tokens = self.phrase.split()
         self.words = []
         for t in tokens:
-            if re.match("\{[A-Za-z0-9\.\:\/]+\}", t):  # parameter token word found
+            if re.match("\{[A-Za-z0-9\.\:\/\-]+\}", t):  # parameter token word found
                 self.words.append((self.WORD_PARAM, t[1:-1]))
             elif re.match("\w+", t):
                 self.words.append((self.WORD_LANGUAGE, t))
