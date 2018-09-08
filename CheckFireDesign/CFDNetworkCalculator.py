@@ -48,7 +48,6 @@ class NetworkCalculator():
         return self.networks[netName]["SourceNode"]
 
     def getWorkerNode(self,string):
-        print (string)
         if re.match('([0-9]{1,3}\.){3}[0-9]{1,3}\-[0-9]{1,3}',string):
             add, _  = string.split('-')
         elif re.match('([0-9]{1,3}\.){3}[0-9]{1,3}',string):
@@ -60,7 +59,6 @@ class NetworkCalculator():
             except KeyError:
                 return self.networks[string]["SourceNode"].split(',')[0]
 
-        print(add)
         for _ , n in self.networks.items():
             net = ipaddress.ip_network(n["Address"])
             print(net)
@@ -71,6 +69,8 @@ class NetworkCalculator():
                         return node
 
                 return n["SourceNode"].split(',')[0]
+            elif n['SourceNode'] == string:
+                return string
 
     def getNetworkRangeAddresses (self,address,finalAddress):
         #Check if it is a network address
