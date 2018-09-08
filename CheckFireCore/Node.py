@@ -10,7 +10,7 @@ class Node:
         self.name = name
         if not configs:
             conf = configparser.ConfigParser()
-            conf.read(NODE_CONF_PATH)
+            conf.read(MASTER_CONF_PATH)
         else:
             conf = configs
         self.__token = conf[name]['Token']
