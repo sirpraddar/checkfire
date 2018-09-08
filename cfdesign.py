@@ -10,6 +10,7 @@ argparser.add_argument('LIBRARY_HEADER_FILE',nargs=1,help="library header file p
 argparser.add_argument('NETWORK_FILE',nargs=1,help="network and policy specifications file path")
 argparser.add_argument('--print-package',help="print constructed package info",action='store_true',dest='ppackage')
 argparser.add_argument('--print-tests',help="print tests contained in constructed package",action='store_true',dest='ptests')
+argparser.add_argument('-w','--write', help="Writes the constructed package to disk",action='store_true',dest='save')
 
 args = argparser.parse_args()
 
@@ -30,3 +31,6 @@ if args.ppackage:
 if args.ptests:
     for n,t in package.tests.items():
         print(t)
+
+if args.save:
+    package.saveToFile()
