@@ -80,7 +80,7 @@ class NetworkCalculator():
             return iplow, iphigh
         elif re.match("([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}",address):
             net = ipaddress.ip_network(address)
-            return net[1], net[-2]
+            return str(net[1]), str(net[-2])
         elif address in self.networks:
             return self.getNetworkRangeAddresses(self.networks[address]['Address'])
         return None
