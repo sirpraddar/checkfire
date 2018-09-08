@@ -14,6 +14,6 @@ phrase = navigate to {URL}
 test=curl
 
 [surf the net]
-phrase = surf the net
+phrase = surf the net [through {http-proxy}]
 params = URL=http://google.it
 test = curl
