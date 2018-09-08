@@ -61,9 +61,7 @@ class NetworkCalculator():
 
         for _ , n in self.networks.items():
             net = ipaddress.ip_network(n["Address"])
-            print(net)
             if ipaddress.ip_address(add) in net.hosts():
-                print ("{} in {} network".format(add,net))
                 for node in n["SourceNode"].split(','):
                     if node == string:
                         return node
