@@ -3,6 +3,7 @@ import subprocess
 import copy
 import ipaddress
 from .CoreUtils import execShellCommand
+from .GlobalSettings import TEMP_PATH
 
 class Test:
     def __init__(self, dictLoaded={}, name=''):
@@ -113,7 +114,7 @@ class Test:
         return finalResult, finalText
 
     def __execTest(self):
-        wd = getcwd() + "/temp/"
+        wd = TEMP_PATH
 
 
         for k,p in self.tparams.items():
