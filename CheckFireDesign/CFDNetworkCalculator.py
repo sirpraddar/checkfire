@@ -69,8 +69,8 @@ class NetworkCalculator():
                 return n["SourceNode"].split(',')[0]
             elif n['SourceNode'] == string:
                 return string
-    @staticmethod
-    def getNetworkRangeAddresses (address):
+
+    def getNetworkRangeAddresses (self,address):
         #Check if it is a network address
         if re.match("([0-9]{1,3}\.){3}[0-9]{1,3}\-[0-9]{1,3}",address):
             ips = address.split('-')
@@ -78,4 +78,9 @@ class NetworkCalculator():
             bytes = iplow.split('.')
             iphigh = bytes[0] + "." + bytes[1] + "." + bytes[2] + "." + ips[1]
             return iplow, iphigh
+        elif re.match("([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}",address):
+            net = ipaddress.ip_network(address)
+            return net[1], net[-2]
+        elif address in self.networks:
+            return self.getNetworkRangeAddresses(self.networks[address]['Address'])
         return None
