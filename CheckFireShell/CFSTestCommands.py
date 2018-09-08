@@ -6,9 +6,11 @@ class tedit (command):
         return self.CONTEXT_TEST
 
     def execute(self, args, environ, context):
-        if len(args) != 3:
+        if len(args) != 3 or (args[1] != 'loop' and len(args) != 4):
             self.println("Usage: tedit name|desc <Value>")
             self.println("       tedit negate true|false|0|1")
+            self.println("       tedit loop <StartIp> <EndIp>")
+            self.println("       tedit no loop")
             return 2
 
         command = args[1]
@@ -21,15 +23,23 @@ class tedit (command):
             context["test"].description = value
             return 0
         elif command == "negate":
-            if value == "true" or value == 1:
+            if value == "true" or value == '1':
                 context["test"].negate = True
                 return 0
-            elif value == "false" or value == 0:
+            elif value == "false" or value == '0':
                 context["test"].negate = False
                 return 0
             else:
                 self.println("Please use true|1 or false|0")
                 return 1
+        elif command == "loop":
+            ipstart = value
+            ipend = args[3]
+            context['test'].iploop = [ipstart, ipend]
+            return 0
+        elif command == "no" and value == "loop":
+            context['test'].iploop = None
+            return 0
         else:
             self.println("Option not recognized. Please use name,description,script,negate")
             return 1
