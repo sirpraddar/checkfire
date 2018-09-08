@@ -79,11 +79,11 @@ class Test:
             return self.__execTest()
 
     def __execLoopTest(self):
-        out ,  _ = execShellCommand('ip -4 address show iface | grep -o -m 1 -E "([0-9]+\.){3}[0-9]{1,3}\/?[1-9]?[0-9]?" | head -n1')
+        iface, _ = execShellCommand('ip link show | grep -o -E "2: [a-z0-9]+" | grep -o -E "[a-z].[a-z0-9]+"')
+        out ,  _ = execShellCommand('ip -4 address show {} | grep -o -m 1 -E "([0-9]+\.){3}[0-9]{1,3}\/?[1-9]?[0-9]?" | head -n1'.format(iface))
         out = out.split('/')
         backupIp = out[0]
         netmask = out[1]
-        iface , _ = execShellCommand('ip link show | grep -o -E "2: [a-z0-9]+" | grep -o -E "[a-z].[a-z0-9]+"')
         backupDefaultGW, _ = execShellCommand('ip route show | grep default | grep -o -E "([0-9]+\.){3}[0-9]+"')
         iplow = ipaddress.ip_address(self.iploop[0])
         iphigh = ipaddress.ip_address(self.iploop[1])
