@@ -72,7 +72,10 @@ class NetworkCalculator():
     @staticmethod
     def getNetworkRangeAddresses (address):
         #Check if it is a network address
-        if re.match("([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]{1,2}",address):
-            net = ipaddress.ip_network(address)
-            return net[0] , net[-1]
+        if re.match("([0-9]{1,3}\.){3}[0-9]{1,3}\-[0-9]{1,3}",address):
+            ips = address.split('-')
+            iplow = ips[0]
+            bytes = iplow.split('.')
+            iphigh = bytes[0] + "." + bytes[1] + "." + bytes[2] + "." + ips[1]
+            return iplow, iphigh
         return None
