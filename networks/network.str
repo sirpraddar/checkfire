@@ -3,12 +3,15 @@ name = reteprova
 
 [Net:LAN]
 Address=192.168.0.0/24
-Node=local1
+SourceNode=local1
+DestNode=192.168.0.100
+Groups=@ufficio=192.168.0.1-10,30
 
 [Net:DMZ]
 Address=192.168.200.0
 Netmask=255.255.255.0
-Node=dmz1
+SourceNode=dmz1,Proxy
+DestNode=192.168.200.100
 Host = SRVMAIL:192.168.200.5
        Proxy:192.168.200.2
        SrvDns:192.168.200.3
@@ -16,14 +19,15 @@ Host = SRVMAIL:192.168.200.5
 [Net:SERVER]
 Address=192.168.5.0
 Netmask=24
-Node=server1
+SourceNode=server1
+DestNode=192.168.5.100
 Host=SRVPRA=192.168.5.4
      SRVQUEL=192.168.5.200
 
 [Policies]
 LAN can ping DMZ;
 DMZ can not ping LAN try 5 times;
-192.168.0.1-10,30 can navigate to http://google.it;
+192.168.0.1-10 can navigate to http://google.it;
 #LAN can send emails;
 #LAN can connect to SRVMAIL tcp 25;
 #SRVMAIL can connect to WAN on tcp port 25;

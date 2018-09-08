@@ -1,4 +1,5 @@
 from CheckFireCore.TestPackage import TestPackage,Test
+from .CFDNetworkCalculator import NetworkCalculator
 import configparser
 import re
 
@@ -8,12 +9,12 @@ class PolicyParser():
         self.testMap = {}
         self.lib = TestPackage(name=libH['LIBH']['LibraryPackage'])
         self.lib.loadFromFile()
-
         for key,entries in libH.items():
             if not key == "LIBH":
                 self.testMap[key] = TestParser(key,self.lib,entries)
 
     def parseNetwork(self,network):
+        networkResolver = NetworkCalculator(network)
         policies = network['Policies'].keys()
         retPack = TestPackage(name=network['NETWORK']['name'])
         count = 1
@@ -33,8 +34,17 @@ class PolicyParser():
                 test.negate = True
 
             #todo: substitute network placeholders with real addresses
-            #todo: Assign test to the right worker node
+            for n,p in test.tparams.items():
+                try:
+                    test.tparams[n] = networkResolver.resolveDestAddress(p)
+                except:
+                    pass
 
+            #todo: Assign test to the right worker node
+            try:
+                retPack.remoteToDo[networkResolver.getWorkerNode(tokens[0])].append(test.name)
+            except KeyError:
+                retPack.remoteToDo[networkResolver.getWorkerNode(tokens[0])] = [test.name]
             retPack.tests[test.name] = test
 
             count += 1

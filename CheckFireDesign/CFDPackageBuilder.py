@@ -3,19 +3,19 @@ from CheckFireCore import TestPackage
 from .CFDPolicyParser import PolicyParser
 
 def readFile (path):
-    cnf = configparser.ConfigParser()
+    cnf = configparser.ConfigParser(delimiters=('=',';'))
+    cnf.optionxform = str
     cnf.read(path)
     return cnf
 
 class PackageBuilder():
     def  __init__(self,networkFilePath,testLibH):
         self.cnfNetwork = readFile(networkFilePath)
-        self.netName = self.cnfNetwork['DEFAULT']['name']
+        self.netName = self.cnfNetwork['NETWORK']['name']
         self.testlibpakdescr = readFile(testLibH)
-        self.policyParser = PolicyParser(self.testlibpakdescr)
-
 
     def buildPackage(self):
-        pack = TestPackage()
+        pp = PolicyParser(self.testlibpakdescr)
+        return pp.parseNetwork(self.cnfNetwork)
 
 

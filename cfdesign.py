@@ -2,7 +2,7 @@
 
 import argparse
 import configparser
-from CheckFireDesign.CFDPolicyParser import PolicyParser
+from CheckFireDesign.CFDPackageBuilder import PackageBuilder
 
 
 argparser = argparse.ArgumentParser(description="Utility to auto build test packages using network configurations.")
@@ -13,12 +13,17 @@ argparser.add_argument('--print-tests',help="print tests contained in constructe
 
 args = argparser.parse_args()
 
+'''
 network = configparser.ConfigParser(delimiters=('=',';'))
 network.read(args.NETWORK_FILE[0])
 libh = configparser.ConfigParser()
 libh.read(args.LIBRARY_HEADER_FILE[0])
 pp = PolicyParser(libh)
 package = pp.parseNetwork(network)
+'''
+pb = PackageBuilder(args.NETWORK_FILE[0],args.LIBRARY_HEADER_FILE[0])
+package = pb.buildPackage()
+
 if args.ppackage:
     print(package)
 
