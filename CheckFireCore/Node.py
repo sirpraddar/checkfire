@@ -60,7 +60,7 @@ def defCallback(req):
 def loadNodesFromConfig():
         nodes = []
         conf = configparser.ConfigParser()
-        conf.read(NODE_CONF_PATH)
+        conf.read(MASTER_CONF_PATH)
         for name in conf.sections():
             nodes.append(Node(name,conf))
 
