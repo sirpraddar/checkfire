@@ -10,10 +10,10 @@ test=ping
 #test=connect
 
 [navigate]
-phrase = navigate to {URL}
+phrase = navigate to {URL} [ through {http_proxy} ]
 test=curl
 
 [surf the net]
-phrase = surf the net [through {http-proxy}]
+phrase = surf the net [through {http_proxy}]
 params = URL=http://google.it
 test = curl
