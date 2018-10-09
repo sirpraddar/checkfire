@@ -4,8 +4,8 @@ from .CFNApp import checkJson, authLevel, ADMIN_LEVEL
 from flask import Blueprint
 import json
 
-_POWER_OFF="/usr/bin/sleep 1; /usr/bin/poweroff"
-_REBOOT="/usr/bin/sleep 1; /usr/bin/reboot"
+_POWER_OFF="/usr/bin/env sleep 1; /usr/bin/env poweroff"
+_REBOOT="/usr/bin/env sleep 1; /usr/bin/env reboot"
 
 mod_power = Blueprint('power',__name__)
 
