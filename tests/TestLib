@@ -11,7 +11,8 @@
             "DESTIP": "127.0.0.2",
             "COUNT": "2"
          },
-         "negate": false
+         "negate": false,
+         "iploop": null
       },
       "PEnv": {
          "name": "PEnv",
@@ -20,7 +21,8 @@
          "configs": [],
          "require": [],
          "tparams": {},
-         "negate": false
+         "negate": false,
+         "iploop": null
       },
       "GoodPy": {
          "name": "GoodPy",
@@ -29,7 +31,8 @@
          "configs": [],
          "require": [],
          "tparams": {},
-         "negate": false
+         "negate": false,
+         "iploop": null
       },
       "wget": {
          "name": "wget",
@@ -40,7 +43,8 @@
          "tparams": {
             "URL": "http://pradelli.eu"
          },
-         "negate": false
+         "negate": false,
+         "iploop": null
       },
       "wget-proxy": {
          "name": "wget-proxy",
@@ -53,7 +57,8 @@
          "tparams": {
             "URL": "http://www.parrocchiadimaranello.com"
          },
-         "negate": false
+         "negate": false,
+         "iploop": null
       },
       "IpLoopGeneric": {
          "name": "IpLoopGeneric",
@@ -67,7 +72,8 @@
             "TEST": "",
             "IFACE": ""
          },
-         "negate": false
+         "negate": false,
+         "iploop": null
       },
       "curl": {
          "name": "curl",
@@ -78,7 +84,8 @@
          "tparams": {
             "URL": "http://2.53.144.1/"
          },
-         "negate": false
+         "negate": false,
+         "iploop": null
       }
    },
    "configs": {
@@ -96,7 +103,7 @@
    },
    "todo": [],
    "files": {
-      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCmlmIFsgLXogJHtUSU1FT1VUK3h9IF07IHRoZW4gVElNRU9VVD0xOyBmaQoKcGluZyAtYyAkQ09VTlQgLVcgJFRJTUVPVVQgJERFU1RJUAo=",
+      "ping.sh": "IyEvYmluL2Jhc2gKCmlmIFsgLXogJHtDT1VOVCt4fSBdOyB0aGVuIENPVU5UPTQ7IGZpCmlmIFsgLXogJHtJTlRFUlZBTCt4fSBdOyB0aGVuIElOVEVSVkFMPTAuMjsgZmkKCnBpbmcgLWMgJENPVU5UIC1pICRJTlRFUlZBTCAkREVTVElQCg==",
       "printEnv.sh": "IyEvYmluL2Jhc2gKCmVudiA+IC90bXAvY2ZlbnY=",
       "good.py": "IyEvdXNyL2Jpbi9weXRob24KCnByaW50ICgidGVzdCBzdWNjZXNzbyIpCmV4aXQoMCk=",
       "http-wget.sh": "IyEvYmluL2Jhc2gKCndnZXQgLXFPLSAkVVJMICY+L2Rldi9udWxsCg==",
