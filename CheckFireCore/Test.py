@@ -86,7 +86,7 @@ class Test:
         backupIp = out[0]
         netmask = out[1]
         backupDefaultGW, _ = execShellCommand('ip route show | grep default | grep -o -E "([0-9]+\.){3}[0-9]+"')
-        currentMAC , _ = execShellCommand('ip link | grep -A 1 enp3s0 | grep -E -o "([0-9a-f]{1,2}:){5}[0-9a-f]{1,2}" | head -n1')
+        currentMAC , _ = execShellCommand('ip link | grep -A 1 ' + iface + ' | grep -E -o "([0-9a-f]{1,2}:){5}[0-9a-f]{1,2}" | head -n1')
         currentMAC = netaddr.EUI(currentMAC)
         iplow = ipaddress.ip_address(self.iploop[0])
         iphigh = ipaddress.ip_address(self.iploop[1])
