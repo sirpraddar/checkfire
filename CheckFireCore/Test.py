@@ -95,7 +95,7 @@ class Test:
 
         while iplow <= iphigh:
             execShellCommand("ip link set dev" + iface + " down")
-            execShellCommand("ip link set dev" + iface + " address " + str(netaddr.EUI(int(currentMAC) + int(iphigh) - int(iplow))))
+            execShellCommand("ip link set dev" + iface + " address " + str(netaddr.EUI(int(currentMAC) + int(iphigh) - int(iplow) + 10)))
             execShellCommand("ip link set dev" + iface + " up")
 
             execShellCommand('ip address flush dev {}'.format(iface))
