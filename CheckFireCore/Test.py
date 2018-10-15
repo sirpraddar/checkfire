@@ -94,9 +94,9 @@ class Test:
         finalText = ""
 
         while iplow <= iphigh:
-            execShellCommand("ip link set dev " + iface + " down")
-            execShellCommand("ip link set dev " + iface + " address " + str(netaddr.EUI(int(currentMAC) + int(iphigh) - int(iplow) + 10)))
-            execShellCommand("ip link set dev " + iface + " up")
+ #           execShellCommand("ip link set dev " + iface + " down")
+ #           execShellCommand("ip link set dev " + iface + " address " + str(netaddr.EUI(int(currentMAC) + int(iphigh) - int(iplow) + 10)))
+ #           execShellCommand("ip link set dev " + iface + " up")
 
             execShellCommand('ip address flush dev {}'.format(iface))
             execShellCommand('ip address add {}/{} dev {}'.format(iplow,netmask,iface))
@@ -114,9 +114,9 @@ class Test:
             finalResult += errCode
             iplow += 1
 
-        execShellCommand("ip link set dev " + iface + " down")
-        execShellCommand("ip link set dev " + iface + " address " + str(currentMAC))
-        execShellCommand("ip link set dev " + iface + " up")
+ #       execShellCommand("ip link set dev " + iface + " down")
+ #       execShellCommand("ip link set dev " + iface + " address " + str(currentMAC))
+ #       execShellCommand("ip link set dev " + iface + " up")
 
         execShellCommand('ip address flush dev {}'.format(iface))
         execShellCommand('ip address add {}/{} dev {}'.format(backupIp,netmask,iface))
