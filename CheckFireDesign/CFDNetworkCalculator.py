@@ -7,6 +7,7 @@ class NetworkCalculator():
         self.hosts = {}
         self.networks = {}
         self.groups = {}
+        self.workers = []
 
         for k,v in network.items():
             if re.match("Net:\w+",k):
@@ -14,6 +15,7 @@ class NetworkCalculator():
                     v['Address'] = str(ipaddress.ip_network(v['Address'] + '/' + v['Netmask']))
 
                 self.networks[k[4:]] = v
+                self.workers.append(v["SourceNode"])
 
             try:
                 for h in v["Host"].split():
@@ -55,10 +57,13 @@ class NetworkCalculator():
         else:
             try:
                 add = self.hosts[string]
-
             except KeyError:
-                return self.networks[string]["SourceNode"].split(',')[0]
-
+                if string in self.workers:
+                    return string
+                elif string in self.networks.keys():
+                    return self.networks[string]["SourceNode"].split(',')[0]
+                else:
+                    raise KeyError
         for _ , n in self.networks.items():
             net = ipaddress.ip_network(n["Address"])
             if ipaddress.ip_address(add) in net.hosts():
