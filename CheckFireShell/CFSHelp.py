@@ -3,6 +3,7 @@ import collections
 
 helpStrings = {
     'newpackage': "Create a new Test Package. Note that it must be saved to be conserved. Usage: createpackage <PackageName>",
+    'clonepackage': "Clone a package",
     'use': "Select an existing (and imported) Test Package for edit and execution. Usage: use <PackageName>",
     'help': 'Used to list all available command or a command specific help (if any was provided). Usage: help [<command>]',
     #'list': "Prints all available commands Usage: list.",
@@ -17,7 +18,21 @@ helpStrings = {
     'clonetest': "Create a new test copying settings from another test. Usage: clonetest <BaseTestName> <CloneTestName>",
     'save': "Saves the current package configuration to disk. Usage: save [<path>]",
     'testlist': "Add, Remove or rearrange tests order. Usage: testlist add|remove|move [<TestName>] [<Position>]",
-    'importfile': "Import an external file to the loaded package. Usage: importfile <FilePath>"
+    'importfile': "Import an external file to the loaded package. Usage: importfile <FilePath>",
+    'tconfig': "Add or remove a test config. Usage: tconfig need|dontneed <ConfigName>",
+    'tfiles': "Add or remove a file requirement for the test. Usage: sage: tfiles add|remove <FileName>",
+    'go': "Launches the execution of the script package",
+    'deletefile': "removes a file from the package",
+    'deletetest': "deletes a test from the package",
+    'deleteconfig': "deletes a config from the package",
+    'tedit': "Modify an edit attribute (eg. description). Usage: tedit name|desc <Value> or tedit negate true|false|0|1",
+    'newconfig': "creates a new config",
+    'cparam': "Add, change, clear or delete a test parameter.",
+    'tconfig': "Enables or disables a config. Usage: tconfig need|dontneed configname",
+    'nodelist': "Prints a list of the nodes for distributed test execution",
+    'tfiles': "TODO",
+    'nodespower': "Shutsdown or reboot cfnodes. Usage: nodespower shutdown|reboot ",
+    'updatenodes': "TODO"
 }
 
 
