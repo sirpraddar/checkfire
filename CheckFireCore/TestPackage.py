@@ -10,11 +10,8 @@ from .Node import Node
 import copy
 from .CoreUtils import validatePath
 
-
-
 def defCallback(test, retCode, stdout):
     pass
-
 
 class TestPackage:
     def __init__(self,path="",name="", dict={}):
@@ -117,7 +114,7 @@ class TestPackage:
                     self.configs[k].activate()
                     self.__activeConfigs.append(k)
 
-            result = self.tests[i].execTest()
+            result = self.tests[i].execTest
             if result[0] == 0:
                 report["brief"]["success"] += 1
             elif result[0] == -1:
