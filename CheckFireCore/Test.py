@@ -91,4 +91,4 @@ class Test:
         if self.negate:
             result.returncode = 127 if result.returncode == 0 else 0
 
-        return result.returncode, result.stdout.decode("ascii")
+        return result.returncode, result.stdout.decode("ascii",errors="ignore")
