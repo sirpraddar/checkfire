@@ -1,6 +1,8 @@
 from os import environ as ShellEnviron, getcwd
 import subprocess
 import copy
+import platform, re
+
 
 class Test:
     def __init__(self, dictLoaded={}, name=''):
@@ -61,15 +63,26 @@ class Test:
         files.extend(self.require)
         return files
 
+    @property
     def execTest(self):
-        wd = getcwd() + "/temp/"
-
-
+        wd = getcwd()
         for k,p in self.tparams.items():
             ShellEnviron[k] = p
 
-        #Exec test script
-        result = subprocess.run(wd+self.script,cwd=wd,stdout=subprocess.PIPE)
+        if platform.system() == "Windows":
+            wd = wd + "\\temp\\"
+            #script = "start " + self.script
+            #script = "start " + wd + self.script
+            winShells = {"ps1": "powershell.exe", "bat": "cmd.exe", "cmd": "cmd.exe"}
+            extension = re.search('\.[\w\d]{3}$', self.script)
+            extension = extension.group(0)
+            extension = extension.lstrip('.')
+            script = winShells.get(extension) + " " + wd + self.script
+        # Exec test script
+        else:
+            wd = wd + "/temp/"
+            script = wd + self.script
+        result = subprocess.run(script,cwd=wd,stdout=subprocess.PIPE)
 
         for k,_ in self.tparams.items():
             if k in ShellEnviron:
@@ -78,4 +91,4 @@ class Test:
         if self.negate:
             result.returncode = 127 if result.returncode == 0 else 0
 
-        return (result.returncode, result.stdout.decode("ascii"))
+        return result.returncode, result.stdout.decode("ascii")
