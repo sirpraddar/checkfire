@@ -147,7 +147,7 @@ class TestPackage:
     def expandFile (self, name):
         with open("temp/" + name, "w") as bergof:
             script = base64.b64decode(self.files[name])
-            bergof.write(script.decode("UTF-8"))
+            bergof.write(script.decode("ascii",errors="ignore"))
             self.__createdFiles.append(name)
         chmod("temp/" + name, 0o700)
 
