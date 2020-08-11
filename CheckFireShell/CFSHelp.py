@@ -32,7 +32,8 @@ helpStrings = {
     'nodelist': "Prints a list of the nodes for distributed test execution",
     'tfiles': "TODO",
     'nodespower': "Shutsdown or reboot cfnodes. Usage: nodespower shutdown|reboot ",
-    'updatenodes': "TODO"
+    'updatenodes': "Launch update procedure on remote nodes using git",
+    'pingnodes': "Checks connectivity with remote nodes",
 }
 
 

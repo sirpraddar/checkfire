@@ -48,3 +48,7 @@ def execute():
     #print(str(tp))
     results = tp.executeLocalTests()
     return jsonify(results)
+
+@CFNApp.route('/ping', methods=['GET','POST'])
+def pingReply():
+    return jsonify({"status":"ready"})

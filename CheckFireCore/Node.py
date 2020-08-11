@@ -50,6 +50,10 @@ class Node:
     def update(self):
         self.__generalRequest('/admin/update')
 
+    def ping(self):
+        self.__generalRequest('/ping')
+
+
 
 def defCallback(req):
     pass
@@ -81,9 +85,16 @@ def updateAllNodes():
     for n in nodes:
         n.update()
 
+def pingAllNodes():
+    nodes = loadNodesFromConfig()
+    res = {}
+    for n in nodes:
+        res[n.name] = n.ping()
+    return res
+
 
 class _AsyncRequest(Thread):
-    def __init__(self,uri,data,callback=defCallback):
+    def __init__(self,uri,data,callback=defCallback,timeout=0):
         Thread.__init__(self)
         self.__uri = uri
         self.__data = data
@@ -91,6 +102,7 @@ class _AsyncRequest(Thread):
         self.done = False
         self.returnCode = 0
         self.__callback = callback
+        self.__timeout = 3600 if timeout == 0 else timeout
 
     def run(self):
         try:

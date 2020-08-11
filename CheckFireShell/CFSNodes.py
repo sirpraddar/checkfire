@@ -1,5 +1,5 @@
 from .CFSCommands import command
-from CheckFireCore.Node import shutdownAllNodes,rebootAllNodes,updateAllNodes
+from CheckFireCore.Node import shutdownAllNodes,rebootAllNodes,updateAllNodes,pingAllNodes
 
 class nodespower (command):
     def getContextSpace(self):
@@ -32,4 +32,14 @@ class updatenodes(command):
             return 1
 
         updateAllNodes()
+        return 0
+
+class pingnodes(command):
+    def getContextSpace(self):
+        return self.CONTEXT_GLOBAL + self.CONTEXT_PACKAGE + self.CONTEXT_CONFIG + self.CONTEXT_TEST
+
+    def execute(self, args, environ, context):
+        ret = pingAllNodes()
+        for k,v in ret:
+            self.println(k + " : " + v)
         return 0
