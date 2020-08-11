@@ -2,6 +2,7 @@ import requests
 from threading import Thread
 import configparser
 from requests import ConnectionError,HTTPError
+from json.decoder import JSONDecodeError
 
 class Node:
     def __init__(self, name, configs=None):
@@ -121,6 +122,12 @@ class _AsyncRequest(Thread):
                 "detailed": "Connection Error with " + self.__uri,
                 "brief": {},
                 "error": -2
+            }
+        except JSONDecodeError as jse:
+            self.results = {
+                "detailed": "Got empty or bad response from " + self.__uri,
+                "brief": {},
+                "error": -3
             }
             self.returnCode = -2
         self.done = True
