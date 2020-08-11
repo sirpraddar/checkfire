@@ -40,6 +40,6 @@ class pingnodes(command):
 
     def execute(self, args, environ, context):
         ret = pingAllNodes()
-        for k,v in ret:
+        for k,v in ret.items():
             self.println(k + " : " + v)
         return 0
