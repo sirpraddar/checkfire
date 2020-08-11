@@ -1,6 +1,6 @@
 from .CFNApp import checkJson, authLevel, ADMIN_LEVEL
 from subprocess import run, Popen
-from .CFNPower import _REBOOT
+from .CFNPower import reboot
 from flask import Blueprint
 
 _UPDATECMD = ['git', 'pull']
@@ -14,5 +14,5 @@ def update():
         return {'message': 'Insufficient privilege level.', 'error': 403}, 403
 
     run(_UPDATECMD)
-    Popen([_REBOOT])
+    reboot()
     return {'error': 0}, 200

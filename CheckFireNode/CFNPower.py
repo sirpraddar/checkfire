@@ -3,9 +3,14 @@ from os import system
 from .CFNApp import checkJson, authLevel, ADMIN_LEVEL
 from flask import Blueprint
 import json
+import platform
 
-_POWER_OFF="/usr/bin/sleep 1; /usr/bin/poweroff"
-_REBOOT="/usr/bin/sleep 1; /usr/bin/reboot"
+if platform.system() == "Linux":
+    _POWER_OFF = "/usr/bin/sleep 1; /usr/bin/poweroff"
+    _REBOOT = "/usr/bin/sleep 1; /usr/bin/reboot"
+else:
+    _POWER_OFF = "shutdown /s /f /t 1 "
+    _REBOOT = "shutdown /r /f /t 1"
 
 mod_power = Blueprint('power',__name__)
 
