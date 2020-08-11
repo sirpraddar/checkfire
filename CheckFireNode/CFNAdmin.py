@@ -2,8 +2,12 @@ from .CFNApp import checkJson, authLevel, ADMIN_LEVEL
 from subprocess import run, Popen
 from .CFNPower import reboot
 from flask import Blueprint
+import platform
 
-_UPDATECMD = ['git', 'pull']
+if platform.system() == "Linux":
+    _UPDATECMD = ['git', 'pull']
+else:
+    _UPDATECMD = ['C:\\Program Files\\Git\\cmd\\git.exe', 'pull']
 mod_admin = Blueprint('admin',__name__)
 
 
