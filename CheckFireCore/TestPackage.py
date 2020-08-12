@@ -142,7 +142,7 @@ class TestPackage:
             self.expandFile(i)
 
     def expandFile (self, name):
-        with open("temp/" + name, "w") as bergof:
+        with open("temp/" + name, "w",encoding="utf8") as bergof:
             script = base64.b64decode(self.files[name])
             bergof.write(script.decode("ascii",errors="ignore"))
             self.__createdFiles.append(name)
@@ -151,7 +151,7 @@ class TestPackage:
     def loadFromFile(self,path):
         validatePath(path)
 
-        file = open (path,'r')
+        file = open (path,'r',encoding="utf8")
         try:
             testParsed = json.loads(file.read())
         except JSONDecodeError:
@@ -187,7 +187,7 @@ class TestPackage:
         if path == "":
             path= self.path
         file = json.dumps(self.toDict(), indent=3)
-        f = open (path, "w")
+        f = open (path, "w",encoding="utf8")
         f.write(file)
 
     def appendNewTest(self, name, scriptPath, description):
@@ -195,7 +195,7 @@ class TestPackage:
         scriptName = Path(scriptPath).name
         self.tests[name].script = scriptName
         self.tests[name].description = description
-        textb64 = base64.b64encode(open(scriptPath, "rb").read())
+        textb64 = base64.b64encode(open(scriptPath, "rb",encoding="utf8").read())
         self.files[scriptName] = textb64.decode("ascii")
 
     def renameTest(self,oldname,newname):
@@ -283,7 +283,7 @@ class TestPackage:
 
     def importFile(self, path):
         name = Path(path).name
-        textb64 = base64.b64encode(open(path,"rb").read())
+        textb64 = base64.b64encode(open(path,"rb",encoding="utf8").read())
         self.files[name] = textb64.decode("ascii")
 
     def rename(self,newname):
