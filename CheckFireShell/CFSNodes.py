@@ -1,5 +1,6 @@
 from .CFSCommands import command
 from CheckFireCore.Node import shutdownAllNodes,rebootAllNodes,updateAllNodes,pingAllNodes
+from .bcolors import bcolors
 
 class nodespower (command):
     def getContextSpace(self):
@@ -35,11 +36,13 @@ class updatenodes(command):
         return 0
 
 class pingnodes(command):
-    def getContextSpace(self):
+   def getContextSpace(self):
         return self.CONTEXT_GLOBAL + self.CONTEXT_PACKAGE + self.CONTEXT_CONFIG + self.CONTEXT_TEST
 
-    def execute(self, args, environ, context):
-        ret = pingAllNodes()
-        for k,v in ret.items():
-            self.println(k + " : " + v)
-        return 0
+   def execute(self, args, environ, context):
+       ret = pingAllNodes()
+       ok = "{}[V]{}".format(bcolors.OKGREEN,bcolors.ENDC)
+       ko = "{}[X]{}".format(bcolors.FAIL,bcolors.ENDC)
+       for k,v in ret.items():
+           self.println("{:<40}{}".format(k,ok if v == 200 else ko))
+       return 0

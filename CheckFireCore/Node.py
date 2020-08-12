@@ -1,8 +1,11 @@
+from multiprocessing.synchronize import Lock
+
 import requests
 from threading import Thread
 import configparser
 from requests import ConnectionError,HTTPError
 from json.decoder import JSONDecodeError
+from threading import Condition
 
 class Node:
     def __init__(self, name, configs=None):
@@ -39,6 +42,11 @@ class Node:
         req = _AsyncRequest(uri, payload, defCallback)
         req.start()
 
+    def __resultRequest(self,command,timeout=None):
+        payload = {'token': self.__token}
+        uri = self.__URIgen(command)
+        return _SyncRequest(uri,payload,timeout).exec()
+
     def __power(self, command):
         self.__generalRequest('power/' + command)
 
@@ -52,7 +60,7 @@ class Node:
         self.__generalRequest('/admin/update')
 
     def ping(self):
-        self.__generalRequest('/ping')
+        return self.__resultRequest('/ping',timeout=4)
 
 
 
@@ -90,24 +98,25 @@ def pingAllNodes():
     nodes = loadNodesFromConfig()
     res = {}
     for n in nodes:
-        res[n.name] = n.ping()
+        code, payload = n.ping()
+        res[n.name] = code
     return res
 
 
 class _AsyncRequest(Thread):
-    def __init__(self,uri,data,callback=defCallback,timeout=0):
-        Thread.__init__(self)
+    def __init__(self,uri,data,callback=defCallback,timeout=3600):
         self.__uri = uri
         self.__data = data
         self.results = None
         self.done = False
         self.returnCode = 0
         self.__callback = callback
-        self.__timeout = 3600 if timeout == 0 else timeout
+        self.__timeout = timeout
+        Thread.__init__(self)
 
     def run(self):
         try:
-            req = requests.post(self.__uri,json=self.__data)
+            req = requests.post(self.__uri,json=self.__data,timeout=self.__timeout)
             self.results = req.json()
             self.returnCode = req.status_code
         except ConnectionError as ce:
@@ -132,3 +141,23 @@ class _AsyncRequest(Thread):
             self.returnCode = -2
         self.done = True
         self.__callback(self)
+
+class _SyncRequest():
+    def __init__(self, uri, data, timeout=None):
+        self.__uri = uri
+        self.__data = data
+        self.__lock = Condition()
+        self.__timeout = timeout
+
+    def exec(self):
+        with self.__lock:
+            req = _AsyncRequest(self.__uri,self.__data,self.callback,timeout=self.__timeout)
+            req.start()
+            while not req.done:
+                self.__lock.wait()
+        #When I'm here the request is ended
+        return req.returnCode, req.results
+
+    def callback(self,req):
+        with self.__lock:
+            self.__lock.notifyAll()
