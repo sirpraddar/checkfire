@@ -144,14 +144,14 @@ class TestPackage:
     def expandFile (self, name):
         with open("temp/" + name, "wb") as bergof:
             script = base64.b64decode(self.files[name])
-            bergof.write(script.decode("ascii",errors="ignore"))
+            bergof.write(script)
             self.__createdFiles.append(name)
         chmod("temp/" + name, 0o700)
 
     def loadFromFile(self,path):
         validatePath(path)
 
-        file = open (path,'rb')
+        file = open (path,'r',encoding="utf8")
         try:
             testParsed = json.loads(file.read())
         except JSONDecodeError:
@@ -187,7 +187,7 @@ class TestPackage:
         if path == "":
             path= self.path
         file = json.dumps(self.toDict(), indent=3)
-        f = open (path, "wb")
+        f = open (path, "w",encoding="utf8")
         f.write(file)
 
     def appendNewTest(self, name, scriptPath, description):
